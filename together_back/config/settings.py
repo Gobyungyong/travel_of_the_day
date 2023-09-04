@@ -24,6 +24,12 @@ CUSTOM_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",
     "rest_framework_simplejwt.token_blacklist",
+    "boards.apps.BoardsConfig",
+    "chattings.apps.ChattingsConfig",
+    "comments.apps.CommentsConfig",
+    "recomments.apps.RecommentsConfig",
+    "reports.apps.ReportsConfig",
+    "users.apps.UsersConfig",
 ]
 
 SYSTEM_APPS = [
