@@ -3,11 +3,6 @@ from asgiref.sync import async_to_sync
 
 
 class ChattingConsumer(JsonWebsocketConsumer):
-    """
-    This consumer is used to show user's online status,
-    and send notifications.
-    """
-
     def __init__(self, *args, **kwargs):
         super().__init__(args, kwargs)
         self.room_name = None
@@ -45,3 +40,7 @@ class ChattingConsumer(JsonWebsocketConsumer):
                 },
             )
         return super().receive_json(content, **kwargs)
+
+    def chat_message_echo(self, event):
+        print(event)
+        self.send_json(event)
