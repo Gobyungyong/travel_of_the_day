@@ -1,5 +1,6 @@
 from pathlib import Path
 import datetime
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,17 +21,20 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 CUSTOM_APPS = [
-    "channels",
-    "corsheaders",
-    "rest_framework",
-    "rest_framework_simplejwt",
-    "rest_framework_simplejwt.token_blacklist",
     "boards.apps.BoardsConfig",
     "chattings.apps.ChattingsConfig",
     "comments.apps.CommentsConfig",
     "recomments.apps.RecommentsConfig",
     "reports.apps.ReportsConfig",
     "users.apps.UsersConfig",
+]
+
+THIRD_PARTY_APPS = [
+    "channels",
+    "corsheaders",
+    "rest_framework",
+    "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
 ]
 
 SYSTEM_APPS = [
@@ -43,7 +47,7 @@ SYSTEM_APPS = [
 ]
 
 
-INSTALLED_APPS = CUSTOM_APPS + SYSTEM_APPS
+INSTALLED_APPS = CUSTOM_APPS + SYSTEM_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -73,9 +77,6 @@ TEMPLATES = [
         },
     },
 ]
-
-# WSGI_APPLICATION = "config.wsgi.application"
-ASGI_APPLICATION = "config.routing.application"
 
 
 # Database
@@ -132,7 +133,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # AUTH_USER_MODEL = "users.User"
 
-CHANNEL_LAYERS = {"default": {"BACKEND": "channels.layers.InMemoryChannelLayer"}}
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
