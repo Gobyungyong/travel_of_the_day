@@ -21,8 +21,9 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 CUSTOM_APPS = [
+    "chattings",
     "boards.apps.BoardsConfig",
-    "chattings.apps.ChattingsConfig",
+    # "chattings.apps.ChattingsConfig",
     "comments.apps.CommentsConfig",
     "recomments.apps.RecommentsConfig",
     "reports.apps.ReportsConfig",
@@ -84,7 +85,8 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [(os.environ.get("REDIS_HOST"), os.environ.get("REDIS_PORT"))],
+            # "hosts": [(os.environ.get("REDIS_HOST"), os.environ.get("REDIS_PORT"))],
+            "hosts": [("localhost", 6379)],
         },
     },
 }
@@ -141,7 +143,7 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# AUTH_USER_MODEL = "users.User"
+AUTH_USER_MODEL = "users.User"
 
 
 REST_FRAMEWORK = {
