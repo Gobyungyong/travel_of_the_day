@@ -1,4 +1,5 @@
 from channels.generic.websocket import JsonWebsocketConsumer
+from asgiref.sync import async_to_sync
 
 
 class ChattingConsumer(JsonWebsocketConsumer):
@@ -15,6 +16,11 @@ class ChattingConsumer(JsonWebsocketConsumer):
         print("Connected!")
         self.room_name = "home"
         self.accept()
+
+        async_to_sync(self.channel_layer.group_add)(
+            self.room_name,
+            self.channel_name,
+        )
         # welcome message 송신
         self.send_json(
             {
@@ -28,5 +34,14 @@ class ChattingConsumer(JsonWebsocketConsumer):
         return super().disconnect(code)
 
     def receive_json(self, content, **kwargs):
-        print(content)
+        message_type = content["type"]
+        if message_type == "chat_message":
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_name,
+                {
+                    "type": "chat_message_echo",
+                    "name": content["name"],
+                    "message": content["message"],
+                },
+            )
         return super().receive_json(content, **kwargs)
