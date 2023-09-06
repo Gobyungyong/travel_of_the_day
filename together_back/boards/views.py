@@ -60,5 +60,12 @@ class BoardDetail(APIView):
 
         raise ParseError("Data validation 실패")
 
-    def delete(self, request):
-        pass
+    def delete(self, request, board_id):
+        board = self.get_board(board_id)
+
+        if board.writer != request.user and not request.user.is_staff:
+            raise PermissionDenied("수정권한이 없습니다.")
+
+        board.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
