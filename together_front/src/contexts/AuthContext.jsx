@@ -54,9 +54,9 @@ export const AuthContextProvider = ({ children }) => {
     async (error) => {
       if (error.response.status === 401 && !refresh) {
         refresh = true;
-        const refresh = localStorage.getItem("refresh_token");
+        const refresh_token = localStorage.getItem("refresh_token");
         const response = await authAxios.post("/api/v1/users/refresh/", {
-          refresh,
+          refresh: refresh_token,
         });
 
         if (response.status === 200) {
