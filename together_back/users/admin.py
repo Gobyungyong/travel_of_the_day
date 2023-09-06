@@ -10,7 +10,7 @@ class CustomUserAdmin(UserAdmin):
             None,
             {"fields": ("username", "password", "is_active")},
         ),
-        (("Personal info"), {"fields": ("email", "age", "gender")}),
+        (("Personal info"), {"fields": ("email",)}),
     )
 
-    list_display = ("username", "name", "age", "gender")
+    list_display = ("username", "name")
