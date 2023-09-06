@@ -31,3 +31,15 @@ class AllComments(APIView):
         comments = CommentSerializer(board.comment, many=True)
 
         return Response(comments.data, status=status.HTTP_200_OK)
+
+
+class DeleteComment(APIView):
+    def delete(self, request, comment_id):
+        comment = Comment.objects.get(id=comment_id)
+
+        if comment.writer != request.user and not request.user.is_staff:
+            raise PermissionDenied("삭제권한이 없습니다.")
+
+        comment.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)

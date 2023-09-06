@@ -4,6 +4,7 @@ from . import views
 
 # api/v1/comments/
 urlpatterns = [
-    path("", views.AllComments.as_view()),
+    path("<int:board_id>/", views.AllComments.as_view()),
     path("new/", views.NewComment.as_view()),
+    path("<int:comment_id>/", views.DeleteComment.as_view()),
 ]
