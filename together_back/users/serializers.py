@@ -8,6 +8,7 @@ class UserSerializer(ModelSerializer):
         fields = (
             "username",
             "name",
+            "is_staff",
         )
 
 
@@ -26,4 +27,5 @@ class UserInfoSerializer(ModelSerializer):
             "email",
             "gender",
             "age",
+            "is_staff",
         )
