@@ -10,3 +10,12 @@ class BoardSerializer(ModelSerializer):
     class Meta:
         model = Board
         fields = "__all__"
+
+
+class RelatedBoardSerializer(ModelSerializer):
+    class Meta:
+        model = Board
+        fields = (
+            "id",
+            "subject",
+        )
