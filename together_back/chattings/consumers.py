@@ -1,13 +1,15 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 from rest_framework_simplejwt.tokens import TokenError, AccessToken
 from urllib.parse import parse_qs
-from asgiref.sync import async_to_sync
+from .models import Conversation
 
 
 class ChattingConsumer(AsyncWebsocketConsumer):
     def __init__(self, *args, **kwargs):
         super().__init__(args, kwargs)
-        self.room_name = None
+        self.user = None
+        self.conversation_name = None
+        self.conversation = None
 
     async def connect(self):
         query_string = self.scope["query_string"].decode()
@@ -23,13 +25,19 @@ class ChattingConsumer(AsyncWebsocketConsumer):
             await self.close()
         else:
             print("Connected!")
-            self.room_name = "home"
             self.accept()
+            self.conversation_name = (
+                f"{self.scope['url_route']['kwargs']['conversation_name']}"
+            )
+            self.conversation, created = Conversation.objects.get_or_create(
+                name=self.conversation_name
+            )
 
-            async_to_sync(self.channel_layer.group_add)(
-                self.room_name,
+            await self.channel_layer.group_add(
+                self.conversation_name,
                 self.channel_name,
             )
+
             # welcome message 송신
             self.send_json(
                 {
@@ -42,11 +50,11 @@ class ChattingConsumer(AsyncWebsocketConsumer):
         print("Disconnected!")
         return super().disconnect(code)
 
-    def receive_json(self, content, **kwargs):
+    async def receive_json(self, content, **kwargs):
         message_type = content["type"]
         if message_type == "chat_message":
-            async_to_sync(self.channel_layer.group_send)(
-                self.room_name,
+            await self.channel_layer.group_send(
+                self.conversation_name,
                 {
                     "type": "chat_message_echo",
                     "name": content["name"],
