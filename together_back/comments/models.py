@@ -1,3 +1,8 @@
 from django.db import models
 
-# Create your models here.
+
+class Comment(models.Model):
+    content = models.CharField(max_length=150)
+    writer = models.ForeignKey(
+        "users.User", on_delete=models.CASCADE, related_name="comment"
+    )
