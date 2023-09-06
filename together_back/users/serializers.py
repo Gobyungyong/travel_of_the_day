@@ -25,7 +25,5 @@ class UserInfoSerializer(ModelSerializer):
             "username",
             "name",
             "email",
-            "gender",
-            "age",
             "is_staff",
         )

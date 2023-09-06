@@ -15,10 +15,7 @@ class Signup(APIView):
         user = SignUpUserSerializer(data=request.data)
 
         if User.objects.filter(username=request.data["username"]).exists():
-            return Response(
-                {"errors": "이미 존재하는 아이디입니다."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            raise ParseError("이미 존재하는 아이디입니다.")
 
         if user.is_valid():
             user = User.objects.create_user(
@@ -26,8 +23,6 @@ class Signup(APIView):
                 name=request.data["name"],
                 password=request.data["password"],
                 email=request.data["email"],
-                gender=request.data["gender"],
-                age=request.data["age"],
             )
 
             token = TokenObtainPairSerializer.get_token(user)
@@ -56,7 +51,7 @@ class Signup(APIView):
             )
 
         else:
-            return Response(user.errors)
+            raise ParseError("Data Validation 실패")
 
 
 class CheckUsername(APIView):
