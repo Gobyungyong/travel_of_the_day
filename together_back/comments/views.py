@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.exceptions import ParseError, NotFound, PermissionDenied
 
+from boards.models import Board
 from .models import Comment
 from .serializers import CommentSerializer
 
@@ -21,3 +22,12 @@ class NewComment(APIView):
             )
 
         raise ParseError("Data validation 실패")
+
+
+class AllComments(APIView):
+    def get(self, request, board_id):
+        board = Board.objects.get(id=board_id)
+
+        comments = CommentSerializer(board.comment, many=True)
+
+        return Response(comments.data, status=status.HTTP_200_OK)

@@ -4,5 +4,6 @@ from . import views
 
 # api/v1/comments/
 urlpatterns = [
-    path("", views.NewComment.as_view()),
+    path("", views.AllComments.as_view()),
+    path("new/", views.NewComment.as_view()),
 ]
