@@ -1,30 +1,46 @@
 import axios from "axios";
 
-class AuthService {
-  setUserInLocalStorage(data) {
-    localStorage.setItem("user", JSON.stringify(data));
+class AuthFunc {
+  setUserInLocalStorage(access, refresh) {
+    localStorage.setItem("access_token", access);
+    localStorage.setItem("refresh_token", refresh);
   }
 
   async login(username, password) {
-    const response = await axios.post("http://127.0.0.1:8000/auth-token/", {
-      username,
-      password,
-    });
-    if (!response.data.token) {
-      return response.data;
+    const response = await axios.post(
+      "http://localhost:8000/api/v1/users/login/",
+      {
+        username,
+        password,
+      }
+    );
+
+    if (response.status !== 200) {
+      return;
     }
-    this.setUserInLocalStorage(response.data);
-    return response.data;
+
+    this.setUserInLocalStorage(response.data.access, response.data.refresh);
+
+    return response.data.access;
   }
 
-  logout() {
-    localStorage.removeItem("user");
+  async logout() {
+    const refresh = localStorage.getItem("refresh_token");
+    const access_token = localStorage.getItem("access_token");
+    const response = await axios.post(
+      "http://localhost:8000/api/v1/users/logout/",
+      {
+        refresh,
+      },
+      { headers: { Authorization: `Bearer ${access_token}` } }
+    );
+    localStorage.clear();
+    return response;
   }
 
   getCurrentUser() {
-    const user = localStorage.getItem("user");
-    return JSON.parse(user);
+    return localStorage.getItem("access_token");
   }
 }
 
-export default new AuthService();
+export default new AuthFunc();
