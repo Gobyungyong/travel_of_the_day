@@ -64,7 +64,7 @@ class BoardDetail(APIView):
         board = self.get_board(board_id)
 
         if board.writer != request.user and not request.user.is_staff:
-            raise PermissionDenied("수정권한이 없습니다.")
+            raise PermissionDenied("삭제권한이 없습니다.")
 
         board.delete()
 
