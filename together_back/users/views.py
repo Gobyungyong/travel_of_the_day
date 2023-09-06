@@ -51,7 +51,7 @@ class Signup(APIView):
             )
 
         else:
-            raise ParseError("Data Validation 실패")
+            raise ParseError(user.errors)
 
 
 class CheckUsername(APIView):

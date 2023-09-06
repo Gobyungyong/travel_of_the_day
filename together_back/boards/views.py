@@ -19,8 +19,7 @@ class NewBoard(APIView):
             return Response(
                 BoardSerializer(new_board).data, status=status.HTTP_201_CREATED
             )
-
-        raise ParseError("Data validation 실패")
+        raise ParseError(serializer.errors)
 
 
 class AllBoards(APIView):
@@ -58,7 +57,7 @@ class BoardDetail(APIView):
                 BoardSerializer(updated_board).data, status=status.HTTP_200_OK
             )
 
-        raise ParseError("Data validation 실패")
+        raise ParseError(serializer.errors)
 
     def delete(self, request, board_id):
         board = self.get_board(board_id)

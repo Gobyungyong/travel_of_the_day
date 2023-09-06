@@ -21,7 +21,7 @@ class NewComment(APIView):
                 CommentSerializer(new_comment).data, status=status.HTTP_201_CREATED
             )
 
-        raise ParseError("Data validation 실패")
+        raise ParseError(serializer.errors)
 
 
 class AllComments(APIView):

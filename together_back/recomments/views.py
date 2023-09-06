@@ -21,7 +21,7 @@ class NewRecomment(APIView):
                 RecommentSerializer(new_recomment).data, status=status.HTTP_201_CREATED
             )
 
-        raise ParseError("Data validation 실패")
+        raise ParseError(serializer.errors)
 
 
 class DeleteRecomment(APIView):
