@@ -28,7 +28,7 @@ class DeleteRecomment(APIView):
     def delete(self, request, recomment_id):
         recomment = Recomment.objects.get(id=recomment_id)
 
-        if comment.writer != request.user and not request.user.is_staff:
+        if recomment.writer != request.user and not request.user.is_staff:
             raise PermissionDenied("삭제권한이 없습니다.")
 
         recomment.delete()
