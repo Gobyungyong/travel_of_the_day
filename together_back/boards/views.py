@@ -5,7 +5,7 @@ from rest_framework import status
 from rest_framework.exceptions import ParseError, NotFound, PermissionDenied
 
 from .models import Board
-from .serializers import BoardSerializer
+from .serializers import BoardSerializer, BoardInfoSerializer
 
 
 class NewBoard(APIView):
@@ -17,7 +17,8 @@ class NewBoard(APIView):
         if serializer.is_valid():
             new_board = serializer.save(writer=request.user)
             return Response(
-                BoardSerializer(new_board).data, status=status.HTTP_201_CREATED
+                BoardInfoSerializer(new_board, context={"request": request}).data,
+                status=status.HTTP_201_CREATED,
             )
         raise ParseError(serializer.errors)
 
@@ -27,7 +28,8 @@ class AllBoards(APIView):
         boards = Board.objects.all()
 
         return Response(
-            BoardSerializer(boards, many=True).data, status=status.HTTP_200_OK
+            BoardInfoSerializer(boards, context={"request": request}, many=True).data,
+            status=status.HTTP_200_OK,
         )
 
 
@@ -41,7 +43,10 @@ class BoardDetail(APIView):
     def get(self, request, board_id):
         board = self.get_board(board_id)
 
-        return Response(BoardSerializer(board).data, status=status.HTTP_200_OK)
+        return Response(
+            BoardInfoSerializer(board, context={"request": request}).data,
+            status=status.HTTP_200_OK,
+        )
 
     def put(self, request, board_id):
         board = self.get_board(board_id)
@@ -54,7 +59,8 @@ class BoardDetail(APIView):
         if serializer.is_valid():
             updated_board = serializer.save()
             return Response(
-                BoardSerializer(updated_board).data, status=status.HTTP_200_OK
+                BoardInfoSerializer(updated_board, context={"request": request}).data,
+                status=status.HTTP_200_OK,
             )
 
         raise ParseError(serializer.errors)
