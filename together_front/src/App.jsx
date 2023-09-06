@@ -7,6 +7,11 @@ import Chatting from "./pages/Chatting";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import routes from "./routes";
+import Test from "./pages/Test";
+import Together from "./pages/Together";
+import Conversations from "./pages/Conversations";
+import BoardEditer from "./pages/BoardEditer";
+import Board from "./pages/Board";
 
 function App() {
   return (
@@ -20,6 +25,9 @@ function App() {
             </AuthContextProvider>
           }
         >
+          <Route path={routes.newBoard} element={<BoardEditer />} />
+          <Route path={routes.homepage} element={<Together />} />
+          <Route path={routes.boardDetail} element={<Board />} />
           <Route
             path={routes.chatting}
             element={
@@ -28,16 +36,17 @@ function App() {
               </ProtectedRoute>
             }
           />
-          {/* <Route
+          <Route
             path={routes.conversations}
             element={
               <ProtectedRoute>
                 <Conversations />
               </ProtectedRoute>
             }
-          /> */}
+          />
           <Route path={routes.login} element={<Login />} />
           <Route path={routes.signup} element={<Signup />} />
+          <Route path="/test" element={<Test />} />
         </Route>
       </Routes>
     </BrowserRouter>
