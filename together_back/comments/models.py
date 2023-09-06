@@ -6,3 +6,6 @@ class Comment(models.Model):
     writer = models.ForeignKey(
         "users.User", on_delete=models.CASCADE, related_name="comment"
     )
+    board = models.ForeignKey(
+        "boards.Board", on_delete=models.CASCADE, related_name="board"
+    )
