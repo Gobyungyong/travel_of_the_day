@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.exceptions import ParseError, NotFound
+from rest_framework.exceptions import ParseError, NotFound, PermissionDenied
 
 from .models import Board
 from .serializers import BoardSerializer
@@ -23,7 +23,7 @@ class NewBoard(APIView):
         raise ParseError("Data validation 실패")
 
 
-class Boards(APIView):
+class AllBoards(APIView):
     def get(self, request):
         boards = Board.objects.all()
 
@@ -43,3 +43,22 @@ class BoardDetail(APIView):
         board = self.get_board(board_id)
 
         return Response(BoardSerializer(board).data, status=status.HTTP_200_OK)
+
+    def put(self, request, board_id):
+        board = self.get_board(board_id)
+
+        if board.writer != request.user and not request.user.is_staff:
+            raise PermissionDenied("수정권한이 없습니다.")
+
+        serializer = BoardSerializer(board, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            updated_board = serializer.save()
+            return Response(
+                BoardSerializer(updated_board).data, status=status.HTTP_200_OK
+            )
+
+        raise ParseError("Data validation 실패")
+
+    def delete(self, request):
+        pass
