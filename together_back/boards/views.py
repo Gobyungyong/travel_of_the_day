@@ -23,6 +23,15 @@ class NewBoard(APIView):
         raise ParseError("Data validation 실패")
 
 
+class Boards(APIView):
+    def get(self, request):
+        boards = Board.objects.all()
+
+        return Response(
+            BoardSerializer(boards, many=True).data, status=status.HTTP_200_OK
+        )
+
+
 class BoardDetail(APIView):
     def get_board(self, board_id):
         try:
