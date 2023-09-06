@@ -26,7 +26,6 @@ CUSTOM_APPS = [
     # "chattings.apps.ChattingsConfig",
     "comments.apps.CommentsConfig",
     "recomments.apps.RecommentsConfig",
-    "reports.apps.ReportsConfig",
     "users.apps.UsersConfig",
 ]
 
