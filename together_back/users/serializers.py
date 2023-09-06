@@ -27,3 +27,9 @@ class UserInfoSerializer(ModelSerializer):
             "email",
             "is_staff",
         )
+
+
+class UsernameSerializer(ModelSerializer):
+    class Meta:
+        model = User
+        fields = ("username",)
