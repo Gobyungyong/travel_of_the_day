@@ -31,8 +31,7 @@ class AuthFunc {
       "http://localhost:8000/api/v1/users/logout/",
       {
         refresh,
-      },
-      { headers: { Authorization: `Bearer ${access_token}` } }
+      }
     );
     localStorage.clear();
     return response;
