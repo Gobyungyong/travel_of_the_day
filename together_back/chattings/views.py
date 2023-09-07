@@ -4,8 +4,9 @@ from rest_framework.exceptions import ParseError, NotFound, PermissionDenied
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 
-from .serializers import ConversationSerializer
-from .models import Conversation
+from .serializers import ConversationSerializer, MessageSerializer
+
+from .models import Conversation, Message
 
 
 class Conversations(APIView):
@@ -24,4 +25,25 @@ class Conversations(APIView):
                 many=True,
             ).data,
             status=status.HTTP_200_OK,
+        )
+
+
+class Messages(APIView):
+    def get(self, request):
+        conversation_name = request.query_params.get("conversation")
+        page = int(request.query_params.get("page", 1))
+
+        messages = Message.objects.filter(
+            conversation__name=conversation_name
+        ).order_by("-timestamp")[(page - 1) * 51 : page * 50]
+
+        all_messages_count = (
+            Message.objects.filter(conversation__name=conversation_name).all().count()
+        )
+
+        next = all_messages_count > (page * 50)
+
+        return Response(
+            {"messages": MessageSerializer(messages, many=True).data, "next": next},
+            status=status.HTTP_202_ACCEPTED,
         )

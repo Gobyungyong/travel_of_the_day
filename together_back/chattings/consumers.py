@@ -51,10 +51,12 @@ class ChattingConsumer(JsonWebsocketConsumer):
             )
 
             messages = self.conversation.messages.all().order_by("-timestamp")[0:50]
+            message_count = self.conversation.messages.all().count()
             self.send_json(
                 {
                     "type": "last_50_messages",
                     "messages": MessageSerializer(messages, many=True).data,
+                    "has_more": message_count > 50,
                 }
             )
 
@@ -64,7 +66,6 @@ class ChattingConsumer(JsonWebsocketConsumer):
 
     def get_receiver(self):
         usernames = self.conversation_name.split("__")
-        print("마 이게 나야!", self.user)
         for username in usernames:
             if username != self.user.username:
                 return User.objects.get(username=username)
