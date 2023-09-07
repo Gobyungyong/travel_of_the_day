@@ -25,7 +25,14 @@ function App() {
             </AuthContextProvider>
           }
         >
-          <Route path={routes.newBoard} element={<BoardEditer />} />
+          <Route
+            path={routes.newBoard}
+            element={
+              <ProtectedRoute>
+                <BoardEditer />
+              </ProtectedRoute>
+            }
+          />
           <Route path={routes.homepage} element={<Together />} />
           <Route path={routes.boardDetail} element={<Board />} />
           <Route
