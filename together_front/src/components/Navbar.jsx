@@ -22,27 +22,8 @@ function Navbar() {
                 <Link
                   to={routes.homepage}
                   className="block py-2 pr-4 pl-3 text-white md:p-0 dark:text-white"
-                  aria-current="page"
                 >
-                  Chats
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/test"
-                  className="block py-2 pr-4 pl-3 text-white md:p-0 dark:text-white"
-                  aria-current="page"
-                >
-                  test
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to={routes.newBoard}
-                  className="block py-2 pr-4 pl-3 text-white md:p-0 dark:text-white"
-                  aria-current="page"
-                >
-                  게시글작성
+                  게시글목록
                 </Link>
               </li>
               {!user ? (
@@ -66,21 +47,21 @@ function Navbar() {
                 </>
               ) : (
                 <>
-                  <span className="text-white">Logged in</span>
+                  <li>
+                    <Link
+                      to={routes.newBoard}
+                      className="block py-2 pr-4 pl-3 text-white md:p-0 dark:text-white"
+                      aria-current="page"
+                    >
+                      게시글작성
+                    </Link>
+                  </li>
                   <li>
                     <Link
                       to={routes.conversations}
                       className="block py-2 pr-4 pl-3 text-white md:p-0 dark:text-white"
                     >
                       채팅목록
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to={routes.homepage}
-                      className="block py-2 pr-4 pl-3 text-white md:p-0 dark:text-white"
-                    >
-                      게시글목록
                     </Link>
                   </li>
                   <button
