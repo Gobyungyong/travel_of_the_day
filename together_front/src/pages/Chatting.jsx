@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, useRef } from "react";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import { useParams } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -8,16 +8,27 @@ import Loading from "../components/uiux/Loading";
 
 function Chattings() {
   const { conversationName } = useParams();
+  const timeout = useRef();
   const [page, setPage] = useState(2);
   const [hasMoreMessages, setHasMoreMessages] = useState(false);
   const [message, setMessage] = useState("");
   const [messageHistory, setMessageHistory] = useState([]);
+  const [meTyping, setMeTyping] = useState(false);
+  const [typing, setTyping] = useState(false);
+  const [username, setUsername] = useState();
 
   const { user, authAxios } = useContext(AuthContext);
 
   async function getUserInfo() {
     const res = await authAxios.get("api/v1/users/myinfo/");
+    await setUsername(res.data.username);
   }
+
+  useEffect(() => {
+    const noTimeout = () => clearTimeout(timeout.current);
+    getUserInfo();
+    noTimeout();
+  }, []);
 
   const { readyState, sendJsonMessage } = useWebSocket(
     user ? `ws://127.0.0.1:8000/chattings/${conversationName}/` : null,
@@ -45,6 +56,10 @@ function Chattings() {
             setMessageHistory(data.messages);
             setHasMoreMessages(data.has_more);
             break;
+          case "typing":
+            console.log(data);
+            updateTyping(data);
+            break;
 
           default:
             console.error("Unknown message type!");
@@ -52,6 +67,9 @@ function Chattings() {
       },
     }
   );
+  if (!username) {
+    return <Loading />;
+  }
 
   async function loadMessages() {
     const res = await authAxios.get(
@@ -73,16 +91,16 @@ function Chattings() {
     [ReadyState.UNINSTANTIATED]: "Uninstantiated",
   }[readyState];
 
-  // function handleChangeMessage(e) {
-  //   setMessage(e.target.value);
-  // }
-
   function handleSubmit(e) {
     e.preventDefault();
+    if (message.length === 0) return;
+    if (message.length > 512) return;
     sendJsonMessage({
       type: "chat_message",
       message,
     });
+    clearTimeout(timeout.current);
+    timeoutFunction();
     setMessage("");
   }
 
@@ -103,6 +121,32 @@ function Chattings() {
       date: `${formattedDate.year}-${formattedDate.month}-${formattedDate.day}`,
       hours: `${formattedDate.hour}:${formattedDate.minute}`,
     };
+  }
+  // 사용자 입력중 여부 체크
+  function timeoutFunction() {
+    setMeTyping(false);
+    sendJsonMessage({ type: "typing", typing: false });
+  }
+
+  function onType() {
+    if (meTyping === false) {
+      setMeTyping(true);
+      sendJsonMessage({ type: "typing", typing: true });
+      timeout.current = setTimeout(timeoutFunction, 200);
+    } else {
+      clearTimeout(timeout.current);
+      timeout.current = setTimeout(timeoutFunction, 200);
+    }
+  }
+  function updateTyping(event) {
+    if (event.user !== username) {
+      setTyping(event.typing);
+    }
+  }
+
+  function handleChangeMessage(e) {
+    setMessage(e.target.value);
+    onType();
   }
 
   return (
@@ -141,10 +185,14 @@ function Chattings() {
       <form onSubmit={handleSubmit}>
         <input
           name="message"
+          type="text"
+          required
+          maxLength={511}
           placeholder="Message"
-          onChange={(e) => setMessage(e.target.value)}
+          onChange={handleChangeMessage}
           value={message}
         />
+        {typing && <p>typing...</p>}
         <button>전송</button>
       </form>
     </>
