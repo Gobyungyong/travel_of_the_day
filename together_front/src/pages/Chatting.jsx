@@ -1,12 +1,15 @@
 import { useState, useContext, useEffect } from "react";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import { useParams } from "react-router-dom";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 import { AuthContext } from "../contexts/AuthContext";
+import Loading from "../components/uiux/Loading";
 
 function Chattings() {
   const { conversationName } = useParams();
-  const [welcomeMessage, setWelcomeMessage] = useState("");
+  const [page, setPage] = useState(2);
+  const [hasMoreMessages, setHasMoreMessages] = useState(false);
   const [message, setMessage] = useState("");
   const [messageHistory, setMessageHistory] = useState([]);
 
@@ -32,15 +35,15 @@ function Chattings() {
         }
       },
       onMessage: (e) => {
-        // MessageEvent {isTrusted: true, data: `{"type": "welcome_message", "message": "Hey there! You've successfully connected!"}`, origin: 'ws://127.0.0.1:8000', lastEventId: '', source: null, …}
-
         const data = JSON.parse(e.data);
         switch (data.type) {
           case "chat_message_echo":
-            setMessageHistory((prev) => prev.concat(data.message));
+            setMessageHistory((prev) => [data.message, ...prev]);
             break;
           case "last_50_messages":
+            console.log("data.has_more", data.has_more);
             setMessageHistory(data.messages);
+            setHasMoreMessages(data.has_more);
             break;
 
           default:
@@ -50,6 +53,18 @@ function Chattings() {
     }
   );
 
+  async function loadMessages() {
+    const res = await authAxios.get(
+      `api/v1/chattings/messages/?conversation=${conversationName}&page=${page}`
+    );
+    console.log("res", res);
+    if (res.status === 202) {
+      setHasMoreMessages(res.data.next);
+      setPage(page + 1);
+      setMessageHistory((prev) => prev.concat(res.data.messages));
+    }
+  }
+
   const connectionStatus = {
     [ReadyState.CONNECTING]: "Connecting",
     [ReadyState.OPEN]: "Open",
@@ -58,16 +73,36 @@ function Chattings() {
     [ReadyState.UNINSTANTIATED]: "Uninstantiated",
   }[readyState];
 
-  function handleChangeMessage(e) {
-    setMessage(e.target.value);
-  }
+  // function handleChangeMessage(e) {
+  //   setMessage(e.target.value);
+  // }
 
-  function handleSubmit() {
+  function handleSubmit(e) {
+    e.preventDefault();
     sendJsonMessage({
       type: "chat_message",
       message,
     });
     setMessage("");
+  }
+
+  function formatMessageTimestamp(timestamp) {
+    if (!timestamp) return;
+
+    const date = new Date(timestamp);
+
+    const formattedDate = {
+      year: date.getFullYear(),
+      month: date.getMonth(),
+      day: date.getDay(),
+      hour: String(date.getHours()).padStart(2, "0"),
+      minute: String(date.getMinutes()).padStart(2, "0"),
+    };
+
+    return {
+      date: `${formattedDate.year}-${formattedDate.month}-${formattedDate.day}`,
+      hours: `${formattedDate.hour}:${formattedDate.minute}`,
+    };
   }
 
   return (
@@ -77,25 +112,41 @@ function Chattings() {
       </div>
 
       <hr />
-      <ul>
-        {messageHistory.map((message, i) => (
-          <div className="border border-gray-200 py-3 px-3" key={i}>
-            {message.from_user.username}: {message.content}
-          </div>
-        ))}
-      </ul>
-      <div>
+      <div
+        id="infinityScroll"
+        style={{
+          height: 300,
+          overflow: "scroll",
+          display: "flex",
+          flexDirection: "column-reverse",
+        }}
+      >
+        <InfiniteScroll
+          style={{ display: "flex", flexDirection: "column-reverse" }}
+          dataLength={messageHistory.length}
+          next={loadMessages}
+          inverse={true}
+          hasMore={hasMoreMessages}
+          loader={<Loading />}
+          scrollableTarget="infinityScroll"
+        >
+          {messageHistory.map((message, i) => (
+            <div key={i}>
+              {message?.from_user?.username}: {message?.content} -{" "}
+              {formatMessageTimestamp(message?.timestamp)?.hours}
+            </div>
+          ))}
+        </InfiniteScroll>
+      </div>
+      <form onSubmit={handleSubmit}>
         <input
           name="message"
           placeholder="Message"
-          onChange={handleChangeMessage}
+          onChange={(e) => setMessage(e.target.value)}
           value={message}
-          className="ml-2 shadow-sm sm:text-sm border-gray-300 bg-gray-100 rounded-md"
         />
-        <button className="ml-3 bg-gray-300 px-3 py-1" onClick={handleSubmit}>
-          Submit
-        </button>
-      </div>
+        <button>전송</button>
+      </form>
     </>
   );
 }
