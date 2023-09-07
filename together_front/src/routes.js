@@ -6,7 +6,7 @@ const routes = {
   newBoard: "/board/editer",
   boardDetail: "/board/:boardId",
   conversations: "/conversations",
-  chatting: "/chatting/:conversationName",
+  chatting: "/chattings/:conversationName",
 };
 
 export default routes;
