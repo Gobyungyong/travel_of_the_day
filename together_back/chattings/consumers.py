@@ -1,7 +1,11 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
+from channels.db import database_sync_to_async
+
 from rest_framework_simplejwt.tokens import TokenError, AccessToken
 from urllib.parse import parse_qs
+
 from .models import Conversation
+from users.models import User
 
 
 class ChattingConsumer(AsyncWebsocketConsumer):
@@ -17,11 +21,14 @@ class ChattingConsumer(AsyncWebsocketConsumer):
 
         try:
             access_token = AccessToken(token_param)
-            user = access_token.user
-        except TokenError:
+            user_id = access_token.payload["user_id"]
+            user = await database_sync_to_async(User.objects.get)(id=user_id)
+        except TokenError as e:
+            print("토큰 에러", e)
             user = None
 
         if user is None:
+            print("유저가 없다.")
             await self.close()
         else:
             print("Connected!")
