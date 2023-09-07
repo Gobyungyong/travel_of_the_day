@@ -38,12 +38,21 @@ class ChattingConsumer(JsonWebsocketConsumer):
                 "conversation_name"
             ]
             usernames = self.conversation_name.split("__")
-            if usernames[0] == usernames[1]:
-                self.close()
+            print("1usernames[0]", usernames[0])
+            print("1usernames[1]", usernames[1])
 
-            self.conversation, created = Conversation.objects.get_or_create(
-                name=self.conversation_name
-            )
+            if usernames[0] == usernames[1]:
+                print("usernames[0]", usernames[0])
+                print("usernames[1]", usernames[1])
+                self.close()
+                return
+
+            print("설마")
+            if usernames[0] != usernames[1]:
+                print("마사카")
+                self.conversation, created = Conversation.objects.get_or_create(
+                    name=self.conversation_name
+                )
 
             async_to_sync(self.channel_layer.group_add)(
                 self.conversation_name,
@@ -79,6 +88,12 @@ class ChattingConsumer(JsonWebsocketConsumer):
 
     def disconnect(self, code):
         print("Disconnected! code: ", code)
+
+        usernames = self.conversation_name.split("__")
+
+        if usernames[0] == usernames[1]:
+            return super().disconnect(code)
+
         if self.user.is_authenticated:
             async_to_sync(self.channel_layer.group_send)(
                 self.conversation_name,
@@ -98,6 +113,14 @@ class ChattingConsumer(JsonWebsocketConsumer):
                 return User.objects.get(username=username)
 
     def receive_json(self, content, **kwargs):
+        usernames = self.conversation_name.split("__")
+
+        if usernames[0] == usernames[1]:
+            print("usernames[0]", usernames[0])
+            print("usernames[1]", usernames[1])
+            self.close()
+            return
+
         message_type = content["type"]
 
         if message_type == "chat_message":

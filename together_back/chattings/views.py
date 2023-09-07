@@ -14,17 +14,16 @@ class Conversations(APIView):
 
     def get(self, request):
         conversations = Conversation.objects.filter(name__contains=request.user)
+        active_conversations = [
+            conv for conv in conversations if conv.count_messages() > 0
+        ]
 
-        if not conversations.exists():
+        if len(active_conversations) == 0:
             raise NotFound("채팅방이 없습니다.")
-
-        for conv in conversations:
-            if not conv.messages.all().exists():
-                raise NotFound("채팅방이 없습니다.")
 
         return Response(
             ConversationSerializer(
-                conversations,
+                active_conversations,
                 context={"user": request.user, "request": request},
                 many=True,
             ).data,

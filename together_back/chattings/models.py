@@ -16,6 +16,9 @@ class Conversation(models.Model):
         self.online.remove(user)
         self.save()
 
+    def count_messages(self):
+        return self.messages.count()
+
     def __str__(self):
         return f"{self.name} ({self.get_online_count()})"
 

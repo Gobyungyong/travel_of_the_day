@@ -72,8 +72,8 @@ function Conversations() {
           key={c.other_user?.username}
         >
           {c.other_user?.username}
-          <div>{formatMessageTimestamp(c.last_message?.timestamp).date}</div>
-          <div>{formatMessageTimestamp(c.last_message?.timestamp).hours}</div>
+          <div>{formatMessageTimestamp(c.last_message?.timestamp)?.date}</div>
+          <div>{formatMessageTimestamp(c.last_message?.timestamp)?.hours}</div>
           <div>마지막 메세지:{c.last_message?.content}</div>
         </Link>
       ))}
