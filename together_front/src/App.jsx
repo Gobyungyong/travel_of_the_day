@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import { AuthContextProvider } from "./contexts/AuthContext";
+import { NotificationContextProvider } from "./contexts/NotificationContext";
 import { ProtectedRoute } from "./utils/ProtectedRoute";
 import Navbar from "./components/Navbar";
 import Chatting from "./pages/Chatting";
@@ -20,7 +21,9 @@ function App() {
           path={routes.index}
           element={
             <AuthContextProvider>
-              <Navbar />
+              <NotificationContextProvider>
+                <Navbar />
+              </NotificationContextProvider>
             </AuthContextProvider>
           }
         >

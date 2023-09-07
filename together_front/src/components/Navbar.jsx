@@ -2,10 +2,13 @@ import { useContext } from "react";
 import { Link, Outlet } from "react-router-dom";
 
 import { AuthContext } from "../contexts/AuthContext";
+import { NotificationContext } from "../contexts/NotificationContext";
 import routes from "../routes";
 
 function Navbar() {
   const { user, logout } = useContext(AuthContext);
+  const { unreadMessageCount, connectionStatus } =
+    useContext(NotificationContext);
 
   return (
     <>
@@ -64,6 +67,13 @@ function Navbar() {
                       채팅목록
                     </Link>
                   </li>
+                  {unreadMessageCount > 0 && (
+                    <span className="ml-2 inline-flex items-center justify-center h-6 w-6 rounded-full bg-white">
+                      <span className="text-xs font-medium leading-none text-gray-800">
+                        {unreadMessageCount}
+                      </span>
+                    </span>
+                  )}
                   <button
                     className="block py-2 pr-4 pl-3 text-white md:p-0 dark:text-white"
                     onClick={logout}

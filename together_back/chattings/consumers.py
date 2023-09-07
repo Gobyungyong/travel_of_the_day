@@ -117,6 +117,30 @@ class ChattingConsumer(JsonWebsocketConsumer):
                 },
             )
 
+            notification_group_name = self.get_receiver().username + "__notifications"
+            async_to_sync(self.channel_layer.group_send)(
+                notification_group_name,
+                {
+                    "type": "new_message_notification",
+                    "name": self.user.username,
+                    "message": MessageSerializer(message).data,
+                },
+            )
+
+        if message_type == "read_messages":
+            messages_to_me = self.conversation.messages.filter(to_user=self.user)
+            messages_to_me.update(read=True)
+
+            # Update the unread message count
+            unread_count = Message.objects.filter(to_user=self.user, read=False).count()
+            async_to_sync(self.channel_layer.group_send)(
+                self.user.username + "__notifications",
+                {
+                    "type": "unread_count",
+                    "unread_count": unread_count,
+                },
+            )
+
         if message_type == "typing":
             async_to_sync(self.channel_layer.group_send)(
                 self.conversation_name,
@@ -140,4 +164,64 @@ class ChattingConsumer(JsonWebsocketConsumer):
         self.send_json(event)
 
     def user_leave(self, event):
+        self.send_json(event)
+
+    def new_message_notification(self, event):
+        self.send_json(event)
+
+    def unread_count(self, event):
+        self.send_json(event)
+
+
+class NotificationConsumer(JsonWebsocketConsumer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(args, kwargs)
+        self.user = None
+        self.notification_group_name = None
+
+    def connect(self):
+        query_string = self.scope["query_string"].decode()
+        token_param = parse_qs(query_string).get("token", [""])[0]
+
+        try:
+            access_token = AccessToken(token_param)
+            user_id = access_token.payload["user_id"]
+            user = User.objects.get(id=user_id)
+            self.user = user
+        except TokenError as e:
+            print("알림 토큰 에러", e)
+            user = None
+
+        if user is None:
+            print("알림 유저가 없다.")
+            self.close()
+        else:
+            self.accept()
+            print("알림 연결 성공")
+            self.notification_group_name = self.user.username + "__notifications"
+            async_to_sync(self.channel_layer.group_add)(
+                self.notification_group_name,
+                self.channel_name,
+            )
+
+            unread_count = Message.objects.filter(to_user=self.user, read=False).count()
+            self.send_json(
+                {
+                    "type": "unread_count",
+                    "unread_count": unread_count,
+                }
+            )
+
+    def disconnect(self, code):
+        print("알림 연결 끊김")
+        async_to_sync(self.channel_layer.group_discard)(
+            self.notification_group_name,
+            self.channel_name,
+        )
+        return super().disconnect(code)
+
+    def new_message_notification(self, event):
+        self.send_json(event)
+
+    def unread_count(self, event):
         self.send_json(event)

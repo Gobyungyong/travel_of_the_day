@@ -60,6 +60,7 @@ function Chattings() {
         switch (data.type) {
           case "chat_message_echo":
             setMessageHistory((prev) => [data.message, ...prev]);
+            sendJsonMessage({ type: "read_messages" });
             break;
           case "last_50_messages":
             console.log("data.has_more", data.has_more);
@@ -94,6 +95,22 @@ function Chattings() {
       },
     }
   );
+  const connectionStatus = {
+    [ReadyState.CONNECTING]: "Connecting",
+    [ReadyState.OPEN]: "Open",
+    [ReadyState.CLOSING]: "Closing",
+    [ReadyState.CLOSED]: "Closed",
+    [ReadyState.UNINSTANTIATED]: "Uninstantiated",
+  }[readyState];
+
+  useEffect(() => {
+    if (connectionStatus === "Open") {
+      sendJsonMessage({
+        type: "read_messages",
+      });
+    }
+  }, [connectionStatus, sendJsonMessage]);
+
   if (!username) {
     return <Loading />;
   }
@@ -109,14 +126,6 @@ function Chattings() {
       setMessageHistory((prev) => prev.concat(res.data.messages));
     }
   }
-
-  const connectionStatus = {
-    [ReadyState.CONNECTING]: "Connecting",
-    [ReadyState.OPEN]: "Open",
-    [ReadyState.CLOSING]: "Closing",
-    [ReadyState.CLOSED]: "Closed",
-    [ReadyState.UNINSTANTIATED]: "Uninstantiated",
-  }[readyState];
 
   function handleSubmit(e) {
     e.preventDefault();
