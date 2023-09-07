@@ -7,7 +7,6 @@ import Chatting from "./pages/Chatting";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import routes from "./routes";
-import Test from "./pages/Test";
 import Together from "./pages/Together";
 import Conversations from "./pages/Conversations";
 import BoardEditer from "./pages/BoardEditer";
@@ -53,7 +52,6 @@ function App() {
           />
           <Route path={routes.login} element={<Login />} />
           <Route path={routes.signup} element={<Signup />} />
-          <Route path="/test" element={<Test />} />
         </Route>
       </Routes>
     </BrowserRouter>

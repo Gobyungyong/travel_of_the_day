@@ -1,31 +1,46 @@
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
 import useWebSocket, { ReadyState } from "react-use-websocket";
+import { useParams } from "react-router-dom";
+
+import { AuthContext } from "../contexts/AuthContext";
 
 function Chattings() {
+  const { conversationName } = useParams();
   const [welcomeMessage, setWelcomeMessage] = useState("");
   const [message, setMessage] = useState("");
-  const [name, setName] = useState("");
   const [messageHistory, setMessageHistory] = useState([]);
 
+  const { user, authAxios } = useContext(AuthContext);
+
+  async function getUserInfo() {
+    const res = await authAxios.get("api/v1/users/myinfo/");
+  }
+
   const { readyState, sendJsonMessage } = useWebSocket(
-    "ws://127.0.0.1:8000/chattings",
+    user ? `ws://127.0.0.1:8000/chattings/${conversationName}/` : null,
     {
-      onOpen: () => {
-        console.log("Connected!");
+      queryParams: {
+        token: user ? user : "",
       },
-      onClose: () => {
-        console.log("Disconnected!");
+      onOpen: (e) => {
+        console.log("Connected!", e);
+      },
+      onClose: (e) => {
+        console.log("Disconnected!", e);
+        if (e.code === 1006) {
+          getUserInfo();
+        }
       },
       onMessage: (e) => {
         // MessageEvent {isTrusted: true, data: `{"type": "welcome_message", "message": "Hey there! You've successfully connected!"}`, origin: 'ws://127.0.0.1:8000', lastEventId: '', source: null, …}
 
         const data = JSON.parse(e.data);
         switch (data.type) {
-          case "welcome_message":
-            setWelcomeMessage(data.message);
-            break;
           case "chat_message_echo":
-            setMessageHistory((prev) => prev.concat(data));
+            setMessageHistory((prev) => prev.concat(data.message));
+            break;
+          case "last_50_messages":
+            setMessageHistory(data.messages);
             break;
 
           default:
@@ -47,17 +62,11 @@ function Chattings() {
     setMessage(e.target.value);
   }
 
-  function handleChangeName(e) {
-    setName(e.target.value);
-  }
-
   function handleSubmit() {
     sendJsonMessage({
       type: "chat_message",
       message,
-      name,
     });
-    setName("");
     setMessage("");
   }
 
@@ -65,35 +74,17 @@ function Chattings() {
     <>
       <div>
         <span>The WebSocket is currently {connectionStatus}</span>
-        <p>{welcomeMessage}</p>
       </div>
-      <button
-        className="bg-gray-300 px-3 py-1"
-        onClick={() => {
-          sendJsonMessage({
-            type: "greeting",
-            message: "Hi!",
-          });
-        }}
-      >
-        Say Hi
-      </button>
+
       <hr />
       <ul>
         {messageHistory.map((message, i) => (
           <div className="border border-gray-200 py-3 px-3" key={i}>
-            {message.name}: {message.message}
+            {message.from_user.username}: {message.content}
           </div>
         ))}
       </ul>
       <div>
-        <input
-          name="name"
-          placeholder="Name"
-          onChange={handleChangeName}
-          value={name}
-          className="shadow-sm sm:text-sm border-gray-300 bg-gray-100 rounded-md"
-        />
         <input
           name="message"
           placeholder="Message"
