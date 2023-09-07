@@ -18,13 +18,17 @@ class Conversations(APIView):
         if not conversations.exists():
             raise NotFound("채팅방이 없습니다.")
 
+        for conv in conversations:
+            if not conv.messages.all().exists():
+                raise NotFound("채팅방이 없습니다.")
+
         return Response(
             ConversationSerializer(
                 conversations,
                 context={"user": request.user, "request": request},
                 many=True,
             ).data,
-            status=status.HTTP_200_OK,
+            status=status.HTTP_202_ACCEPTED,
         )
 
 

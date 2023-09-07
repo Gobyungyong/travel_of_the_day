@@ -10,9 +10,13 @@ function Conversations() {
   const [user, setUser] = useState();
 
   async function getConversationList() {
-    const res = await authAxios("api/v1/chattings/conversations/");
-    setConversations(res.data);
-    console.log("res", res);
+    try {
+      const res = await authAxios("api/v1/chattings/conversations/");
+      setConversations(res.data);
+      console.log("res", res);
+    } catch {
+      return;
+    }
   }
 
   async function getUserInfo() {
@@ -51,10 +55,15 @@ function Conversations() {
     };
   }
 
-  if (!conversations || !user) {
+  if (!conversations && !user) {
     return <Loading />;
   }
 
+  if (!conversations) {
+    return <div>채팅방이 없습니다.</div>;
+  }
+
+  console.log(conversations);
   return (
     <div>
       {conversations.map((c) => (
@@ -63,9 +72,7 @@ function Conversations() {
           key={c.other_user?.username}
         >
           {c.other_user?.username}
-          <div className="text-gray-700">
-            {formatMessageTimestamp(c.last_message?.timestamp).date}
-          </div>
+          <div>{formatMessageTimestamp(c.last_message?.timestamp).date}</div>
           <div>{formatMessageTimestamp(c.last_message?.timestamp).hours}</div>
           <div>마지막 메세지:{c.last_message?.content}</div>
         </Link>
