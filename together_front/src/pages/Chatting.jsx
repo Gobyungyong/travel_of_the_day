@@ -13,7 +13,7 @@ function Chattings() {
   const [hasMoreMessages, setHasMoreMessages] = useState(false);
   const [message, setMessage] = useState("");
   const [messageHistory, setMessageHistory] = useState([]);
-  const [meTyping, setMeTyping] = useState(false);
+  const [typingByMe, setTypingByMe] = useState(false);
   const [typing, setTyping] = useState(false);
   const [username, setUsername] = useState();
 
@@ -100,7 +100,7 @@ function Chattings() {
       message,
     });
     clearTimeout(timeout.current);
-    timeoutFunction();
+    handleQuitTyping();
     setMessage("");
   }
 
@@ -123,30 +123,35 @@ function Chattings() {
     };
   }
   // 사용자 입력중 여부 체크
-  function timeoutFunction() {
-    setMeTyping(false);
+
+  // 타이핑 안하는 중으로 상태 변경 후 ws에 typing false 송신
+  function handleQuitTyping() {
+    setTypingByMe(false);
     sendJsonMessage({ type: "typing", typing: false });
   }
 
-  function onType() {
-    if (meTyping === false) {
-      setMeTyping(true);
+  function handleTyping() {
+    if (typingByMe === false) {
+      // 타이핑 중 아니였으면 타이핑중으로 상태 변경 후 ws에 타이핑 메세지 송신
+      setTypingByMe(true);
       sendJsonMessage({ type: "typing", typing: true });
-      timeout.current = setTimeout(timeoutFunction, 200);
+      timeout.current = setTimeout(handleQuitTyping, 200); // 200 미리세컨드 뒤에 ws에 타이핑 종료 메세지 송신
     } else {
+      // 이미 타이핑 중이였으면 handleQuitTyping 호출 200미리세컨드 지연
       clearTimeout(timeout.current);
-      timeout.current = setTimeout(timeoutFunction, 200);
+      timeout.current = setTimeout(handleQuitTyping, 200); // 200 미리세컨드 뒤에 ws에 타이핑 종료 메세지 송신
     }
   }
-  function updateTyping(event) {
-    if (event.user !== username) {
-      setTyping(event.typing);
+  // 타이핑중인 사용자가 본인이면 입력중 표시 안나오게
+  function updateTyping(typingData) {
+    if (typingData.user !== username) {
+      setTyping(typingData.typing);
     }
   }
 
   function handleChangeMessage(e) {
     setMessage(e.target.value);
-    onType();
+    handleTyping();
   }
 
   return (
@@ -192,7 +197,7 @@ function Chattings() {
           onChange={handleChangeMessage}
           value={message}
         />
-        {typing && <p>typing...</p>}
+        {typing && <p>상대방이 메세지를 입력중입니다...</p>}
         <button>전송</button>
       </form>
     </>
