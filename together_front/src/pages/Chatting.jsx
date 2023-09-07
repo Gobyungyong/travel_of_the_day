@@ -38,7 +38,7 @@ function Chattings() {
     getUserInfo();
     getConversationInfo();
     noTimeout();
-  }, [conversationName, user]);
+  }, []);
 
   const { readyState, sendJsonMessage } = useWebSocket(
     user ? `ws://127.0.0.1:8000/chattings/${conversationName}/` : null,
@@ -199,11 +199,11 @@ function Chattings() {
       {conversation && (
         <div className="py-6">
           <h3 className="text-3xl font-semibold text-gray-900">
-            대화상대: {conversation.other_user.username}
+            대화상대: {conversation?.other_user?.username}
           </h3>
           <span className="text-sm">
-            {conversation.other_user.username}
-            {participants.includes(conversation.other_user.username)
+            {conversation?.other_user?.username}
+            {participants.includes(conversation.other_user?.username)
               ? " online"
               : " offline"}
           </span>
