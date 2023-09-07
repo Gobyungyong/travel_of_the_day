@@ -32,6 +32,28 @@ class Conversations(APIView):
         )
 
 
+class SpecificConversation(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, conversation_name):
+        try:
+            print(conversation_name)
+            conversation = Conversation.objects.get(name=conversation_name)
+        except:
+            raise NotFound("채팅방이 없습니다.")
+
+        if not conversation.messages.all().exists():
+            raise NotFound("채팅방이 없습니다.")
+
+        return Response(
+            ConversationSerializer(
+                conversation,
+                context={"user": request.user, "request": request},
+            ).data,
+            status=status.HTTP_202_ACCEPTED,
+        )
+
+
 class Messages(APIView):
     def get(self, request):
         conversation_name = request.query_params.get("conversation")

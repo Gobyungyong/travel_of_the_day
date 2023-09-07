@@ -16,6 +16,8 @@ function Chattings() {
   const [typingByMe, setTypingByMe] = useState(false);
   const [typing, setTyping] = useState(false);
   const [username, setUsername] = useState();
+  const [participants, setParticipants] = useState([]);
+  const [conversation, setConversation] = useState();
 
   const { user, authAxios } = useContext(AuthContext);
 
@@ -24,11 +26,19 @@ function Chattings() {
     await setUsername(res.data.username);
   }
 
+  async function getConversationInfo() {
+    const res = await authAxios.get(`api/v1/chattings/${conversationName}/`);
+    if (res.status === 202) {
+      await setConversation(res.data);
+    }
+  }
+
   useEffect(() => {
     const noTimeout = () => clearTimeout(timeout.current);
     getUserInfo();
+    getConversationInfo();
     noTimeout();
-  }, []);
+  }, [conversationName, user]);
 
   const { readyState, sendJsonMessage } = useWebSocket(
     user ? `ws://127.0.0.1:8000/chattings/${conversationName}/` : null,
@@ -59,6 +69,23 @@ function Chattings() {
           case "typing":
             console.log(data);
             updateTyping(data);
+            break;
+          case "user_join":
+            setParticipants((prev) => {
+              if (!prev.includes(data.user)) {
+                return [...prev, data.user];
+              }
+              return prev;
+            });
+            break;
+          case "user_leave":
+            setParticipants((prev) => {
+              const newPcpts = prev.filter((x) => x !== data.user);
+              return newPcpts;
+            });
+            break;
+          case "online_user_list":
+            setParticipants(data.users);
             break;
 
           default:
@@ -159,6 +186,20 @@ function Chattings() {
       <div>
         <span>The WebSocket is currently {connectionStatus}</span>
       </div>
+      {/* online */}
+      {conversation && (
+        <div className="py-6">
+          <h3 className="text-3xl font-semibold text-gray-900">
+            대화상대: {conversation.other_user.username}
+          </h3>
+          <span className="text-sm">
+            {conversation.other_user.username}
+            {participants.includes(conversation.other_user.username)
+              ? " online"
+              : " offline"}
+          </span>
+        </div>
+      )}
 
       <hr />
       <div
