@@ -104,12 +104,12 @@ function Chattings() {
   }[readyState];
 
   useEffect(() => {
-    if (connectionStatus === "Open") {
+    if (readyState === ReadyState.OPEN) {
       sendJsonMessage({
         type: "read_messages",
       });
     }
-  }, [connectionStatus, sendJsonMessage]);
+  }, [connectionStatus]);
 
   if (!username) {
     return <Loading />;
