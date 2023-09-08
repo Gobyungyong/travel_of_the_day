@@ -53,7 +53,7 @@ class SpecificConversation(APIView):
         )
 
 
-class Messages(APIView):
+class MoreMessages(APIView):
     def get(self, request):
         conversation_name = request.query_params.get("conversation")
         page = int(request.query_params.get("page", 1))
