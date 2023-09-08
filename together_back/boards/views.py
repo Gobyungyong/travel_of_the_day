@@ -44,7 +44,10 @@ class BoardDetail(APIView):
         board = self.get_board(board_id)
 
         return Response(
-            BoardInfoSerializer(board, context={"request": request}).data,
+            BoardInfoSerializer(
+                board,
+                context={"request": request},
+            ).data,
             status=status.HTTP_200_OK,
         )
 
