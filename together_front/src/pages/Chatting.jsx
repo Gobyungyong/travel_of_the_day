@@ -23,12 +23,14 @@ function Chattings() {
 
   async function getUserInfo() {
     const res = await authAxios.get("api/v1/users/myinfo/");
-    await setUsername(res.data.username);
+    if (res.status === 200) {
+      await setUsername(res.data.username);
+    }
   }
 
   async function getConversationInfo() {
     const res = await authAxios.get(`api/v1/chattings/${conversationName}/`);
-    if (res.status === 202) {
+    if (res?.status === 202) {
       await setConversation(res.data);
     }
   }
@@ -120,7 +122,7 @@ function Chattings() {
       `api/v1/chattings/messages/?conversation=${conversationName}&page=${page}`
     );
     console.log("res", res);
-    if (res.status === 202) {
+    if (res?.status === 202) {
       setHasMoreMessages(res.data.next);
       setPage(page + 1);
       setMessageHistory((prev) => prev.concat(res.data.messages));
