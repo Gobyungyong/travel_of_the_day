@@ -19,6 +19,7 @@ class CommentSerializer(ModelSerializer):
 class RelatedCommentSerializer(ModelSerializer):
     recomment_set = RecommentSerializer(read_only=True, many=True)
     recomments_count = SerializerMethodField()
+    writer = UsernameSerializer(read_only=True)
 
     class Meta:
         model = Comment
