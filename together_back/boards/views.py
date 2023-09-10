@@ -3,6 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.exceptions import ParseError, NotFound, PermissionDenied
+from django.db.models import Q
 
 from .models import Board
 from .serializers import BoardSerializer, BoardInfoSerializer
@@ -77,3 +78,50 @@ class BoardDetail(APIView):
         board.delete()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class SearchBoard(APIView):
+    def get(self, request):
+        keyword = request.query_params.get("kw")
+        category = request.query_params.get("category")
+
+        if category == "board":
+            search_result = Board.objects.filter(
+                Q(subject__icontains=keyword) | Q(content__icontains=keyword)
+            ).distinct()
+
+        if category == "comment":
+            search_result = Board.objects.filter(
+                Q(comment_set__content__icontains=keyword)
+                | Q(comment_set__recomment_set__content__icontains=keyword)
+            )
+
+        if category == "boardcomment":
+            search_result = Board.objects.filter(
+                Q(subject__icontains=keyword)
+                | Q(content__icontains=keyword)
+                | Q(comment_set__content__icontains=keyword)
+                | Q(comment_set__recomment_set__content__icontains=keyword)
+            )
+
+        if category == "writer":
+            search_result = Board.objects.filter(writer__icontains=keyword)
+
+        if category == "all":
+            search_result = Board.objects.filter(
+                Q(subject__icontains=keyword)
+                | Q(content__icontains=keyword)
+                | Q(comment_set__content__icontains=keyword)
+                | Q(comment_set__recomment_set__content__icontains=keyword)
+                | Q(writer__icontains=keyword)
+            )
+
+        if not search_result.exists():
+            raise NotFound("해당하는 게시글이 없습니다.")
+
+        return Response(
+            BoardInfoSerializer(
+                search_result, many=True, context={"request": request}
+            ).data,
+            status=status.HTTP_200_OK,
+        )
