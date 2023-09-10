@@ -29,8 +29,8 @@ function Board() {
   }, []);
 
   useEffect(() => {
-    getBoardDetail(boardId);
-  }, [boardId]);
+    getBoardDetail();
+  }, []);
 
   useEffect(() => {
     if (formState.isSubmitSuccessful) {
@@ -44,7 +44,7 @@ function Board() {
       content,
       board: boardId,
     });
-    getBoardDetail(boardId);
+    getBoardDetail();
   }
 
   async function recommentOnValid(event, comment_id) {
@@ -54,11 +54,11 @@ function Board() {
       content,
       comment: comment_id,
     });
-    getBoardDetail(boardId);
+    getBoardDetail();
     event.target.content.value = "";
   }
 
-  async function getBoardDetail(board_id) {
+  async function getBoardDetail() {
     const res = await authAxios.get(`api/v1/boards/${boardId}/`);
     setBoard(res.data);
   }
@@ -127,10 +127,14 @@ function Board() {
       <div>제목:{board.subject}</div>
       <div>작성자:{board.writer.username}</div>
       <div>내용:{board.content}</div>
-      {board.writer.id === user.id ? (
+      {board.writer.id === user.id || user.is_staff ? (
         <button onClick={deleteBoard}>삭제</button>
       ) : null}
-      {board.writer.id === user.id ? <button>수정</button> : null}
+      {board.writer.id === user.id || user.is_staff ? (
+        <button onClick={() => navigate(`/board/modifier/${boardId}`)}>
+          수정
+        </button>
+      ) : null}
       <Link to={`/chattings/${board.writer.username}__${user?.username}`}>
         <div>{board.writer.username}</div>
       </Link>

@@ -12,6 +12,7 @@ import Together from "./pages/Together";
 import Conversations from "./pages/Conversations";
 import BoardEditer from "./pages/BoardEditer";
 import Board from "./pages/Board";
+import BoardModifier from "./pages/BoardModifier";
 
 function App() {
   return (
@@ -32,6 +33,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <BoardEditer />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={routes.boardModifier}
+            element={
+              <ProtectedRoute>
+                <BoardModifier />
               </ProtectedRoute>
             }
           />
