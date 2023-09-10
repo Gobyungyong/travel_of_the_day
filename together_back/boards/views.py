@@ -7,6 +7,7 @@ from django.db.models import Q
 
 from .models import Board
 from .serializers import BoardSerializer, BoardInfoSerializer
+from comments.models import Comment
 
 
 class NewBoard(APIView):
@@ -81,8 +82,12 @@ class BoardDetail(APIView):
 
 
 class SearchBoard(APIView):
+    def get_filtered_boards(self, kw):
+        comments = Comment.objects.filter(recomment__content__icontains=kw)
+        return Board.objects.filter(comment__in=comments)
+
     def get(self, request):
-        keyword = request.query_params.get("kw")
+        keyword = request.query_params.get("keyword")
         category = request.query_params.get("category")
 
         if category == "board":
@@ -91,30 +96,34 @@ class SearchBoard(APIView):
             ).distinct()
 
         if category == "comment":
-            search_result = Board.objects.filter(
-                Q(comment_set__content__icontains=keyword)
-                | Q(comment_set__recomment_set__content__icontains=keyword)
-            )
+            boards = Board.objects.filter(comment__content__icontains=keyword)
+            boards_filtered_by_recomments = self.get_filtered_boards(keyword)
+
+            search_result = boards.union(boards_filtered_by_recomments)
 
         if category == "boardcomment":
-            search_result = Board.objects.filter(
+            boards = Board.objects.filter(
                 Q(subject__icontains=keyword)
                 | Q(content__icontains=keyword)
-                | Q(comment_set__content__icontains=keyword)
-                | Q(comment_set__recomment_set__content__icontains=keyword)
-            )
+                | Q(comment__content__icontains=keyword)
+            ).distinct()
+            boards_filtered_by_recomments = self.get_filtered_boards(keyword)
+            search_result = boards.union(boards_filtered_by_recomments)
 
         if category == "writer":
-            search_result = Board.objects.filter(writer__icontains=keyword)
+            search_result = Board.objects.filter(
+                writer__username__icontains=keyword
+            ).distinct()
 
         if category == "all":
-            search_result = Board.objects.filter(
+            boards = Board.objects.filter(
                 Q(subject__icontains=keyword)
                 | Q(content__icontains=keyword)
-                | Q(comment_set__content__icontains=keyword)
-                | Q(comment_set__recomment_set__content__icontains=keyword)
-                | Q(writer__icontains=keyword)
-            )
+                | Q(comment__content__icontains=keyword)
+                | Q(writer__username__icontains=keyword)
+            ).distinct()
+            boards_filtered_by_recomments = self.get_filtered_boards(keyword)
+            search_result = boards.union(boards_filtered_by_recomments)
 
         if not search_result.exists():
             raise NotFound("해당하는 게시글이 없습니다.")
