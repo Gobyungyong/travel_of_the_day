@@ -32,4 +32,4 @@ class UserInfoSerializer(ModelSerializer):
 class UsernameSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = ("username",)
+        fields = ("username", "id")
