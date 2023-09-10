@@ -37,7 +37,4 @@ class BoardInfoSerializer(ModelSerializer):
 class RelatedBoardSerializer(ModelSerializer):
     class Meta:
         model = Board
-        fields = (
-            "id",
-            "subject",
-        )
+        fields = ("id", "subject", "created_at", "updated_at")

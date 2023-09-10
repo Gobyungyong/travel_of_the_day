@@ -23,7 +23,15 @@ class RelatedCommentSerializer(ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ("id", "content", "writer", "recomment_set", "recomments_count")
+        fields = (
+            "id",
+            "content",
+            "writer",
+            "recomment_set",
+            "recomments_count",
+            "created_at",
+            "updated_at",
+        )
 
     def get_recomments_count(self, comment):
         return comment.recomment_set.all().count()
