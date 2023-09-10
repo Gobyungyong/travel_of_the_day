@@ -25,16 +25,21 @@ class AuthFunc {
   }
 
   async logout() {
-    const refresh = localStorage.getItem("refresh_token");
-    const access_token = localStorage.getItem("access_token");
-    const response = await axios.post(
-      "http://localhost:8000/api/v1/users/logout/",
-      {
-        refresh,
-      }
-    );
-    localStorage.clear();
-    return response;
+    try {
+      const refresh = localStorage.getItem("refresh_token");
+      const access_token = localStorage.getItem("access_token");
+      const response = await axios.post(
+        "http://localhost:8000/api/v1/users/logout/",
+        {
+          refresh,
+        }
+      );
+      localStorage.clear();
+      return response;
+    } catch {
+      localStorage.clear();
+      throw new Error("이미 만료된 리프레쉬 토큰");
+    }
   }
 
   getCurrentUser() {

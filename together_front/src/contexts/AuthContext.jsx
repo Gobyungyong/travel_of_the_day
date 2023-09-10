@@ -72,8 +72,9 @@ export const AuthContextProvider = ({ children }) => {
           response.response?.status === 400 ||
           response.response?.status === 401
         ) {
-          logout();
-          return;
+          localStorage.clear();
+          alert("로그인 후 이용 가능한 서비스입니다.");
+          navigate(routes.login);
         }
       }
 
