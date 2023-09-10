@@ -21,12 +21,12 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 CUSTOM_APPS = [
-    # "chattings",
     "boards.apps.BoardsConfig",
     "chattings.apps.ChattingsConfig",
     "comments.apps.CommentsConfig",
     "recomments.apps.RecommentsConfig",
     "users.apps.UsersConfig",
+    "common.apps.CommonConfig",
 ]
 
 THIRD_PARTY_APPS = [
