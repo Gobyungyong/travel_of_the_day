@@ -25,7 +25,7 @@ function BoardModifier() {
     defaultValues: { subject: board.subject, content: board.content },
   });
 
-  async function getBoardDetail(board_id) {
+  async function getBoardDetail() {
     const res = await authAxios.get(`api/v1/boards/${boardId}/`);
     setBoard(res.data);
   }
@@ -33,7 +33,7 @@ function BoardModifier() {
   async function onValid(data) {
     const content = data.content;
     const subject = data.subject;
-    const response = await authAxios.post("api/v1/boards/new/", {
+    const response = await authAxios.put(`api/v1/boards/${boardId}/`, {
       content,
       subject,
     });
