@@ -1,9 +1,12 @@
 import { useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 function BoardEditer() {
   const { authAxios } = useContext(AuthContext);
+
+  const navigate = useNavigate();
 
   const { register, handleSubmit } = useForm();
 
@@ -14,6 +17,7 @@ function BoardEditer() {
       content,
       subject,
     });
+    await navigate(`/board/${response.data.id}`);
   }
 
   return (
