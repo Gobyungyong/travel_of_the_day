@@ -47,7 +47,7 @@ function Board() {
     getBoardDetail(boardId);
   }
 
-  async function reOnValid(event, comment_id) {
+  async function recommentOnValid(event, comment_id) {
     event.preventDefault();
     const content = event.target.content.value;
     await authAxios.post("api/v1/recomments/new/", {
@@ -66,6 +66,21 @@ function Board() {
   async function getUserInfo() {
     const res = await authAxios.get("api/v1/users/myinfo/");
     await setUser(res.data);
+  }
+
+  async function deleteBoard() {
+    if (board.writer.id === user.id) {
+      if (window.confirm("게시글을 삭제하시겠습니까?")) {
+        try {
+          await authAxios.delete(`api/v1/boards/${boardId}/`);
+          navigate("/homepage", { replace: true });
+        } catch {
+          return;
+        }
+      } else {
+        return;
+      }
+    }
   }
 
   if (!board) {
@@ -92,7 +107,7 @@ function Board() {
         {board.comment_set.map((comment) => (
           <div key={comment.id}>
             {comment.writer.username} : {comment.content}
-            <form onSubmit={(e) => reOnValid(e, comment.id)}>
+            <form onSubmit={(e) => recommentOnValid(e, comment.id)}>
               <textarea name="content" />
               <button>대댓글</button>
             </form>
@@ -112,6 +127,10 @@ function Board() {
       <div>제목:{board.subject}</div>
       <div>작성자:{board.writer.username}</div>
       <div>내용:{board.content}</div>
+      {board.writer.id === user.id ? (
+        <button onClick={deleteBoard}>삭제</button>
+      ) : null}
+      {board.writer.id === user.id ? <button>수정</button> : null}
       <Link to={`/chattings/${board.writer.username}__${user?.username}`}>
         <div>{board.writer.username}</div>
       </Link>
@@ -122,7 +141,7 @@ function Board() {
       {board.comment_set.map((comment) => (
         <div key={comment.id}>
           {comment.writer.username} : {comment.content}
-          <form onSubmit={(e) => reOnValid(e, comment.id)}>
+          <form onSubmit={(e) => recommentOnValid(e, comment.id)}>
             <textarea name="content" />
             <button>대댓글</button>
           </form>
