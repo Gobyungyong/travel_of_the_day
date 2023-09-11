@@ -5,11 +5,7 @@ from .models import User
 class UserSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = (
-            "username",
-            "name",
-            "is_staff",
-        )
+        fields = ("username", "name", "is_staff", "nickname", "avatar")
 
 
 class SignUpUserSerializer(ModelSerializer):
@@ -21,10 +17,10 @@ class SignUpUserSerializer(ModelSerializer):
 class UserInfoSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = ("username", "name", "email", "is_staff", "id")
+        fields = ("username", "name", "email", "is_staff", "id", "nickname", "avatar")
 
 
 class UsernameSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = ("username", "id")
+        fields = ("username", "id", "nickname", "avatar")

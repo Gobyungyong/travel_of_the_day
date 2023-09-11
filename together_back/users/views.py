@@ -17,12 +17,17 @@ class Signup(APIView):
         if User.objects.filter(username=request.data["username"]).exists():
             raise ParseError("이미 존재하는 아이디입니다.")
 
+        if User.objects.filter(nickname=request.data["nickname"]).exists():
+            raise ParseError("이미 존재하는 닉네임입니다.")
+
         if user.is_valid():
             user = User.objects.create_user(
                 username=request.data["username"],
                 name=request.data["name"],
                 password=request.data["password"],
                 email=request.data["email"],
+                nickname=request.data["nickname"],
+                avatar=request.data["avatar"],
             )
 
             token = TokenObtainPairSerializer.get_token(user)
