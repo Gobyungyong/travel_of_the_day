@@ -38,21 +38,33 @@ class ChattingConsumer(JsonWebsocketConsumer):
                 "conversation_name"
             ]
             usernames = self.conversation_name.split("__")
-            print("1usernames[0]", usernames[0])
-            print("1usernames[1]", usernames[1])
 
             if usernames[0] == usernames[1]:
-                print("usernames[0]", usernames[0])
-                print("usernames[1]", usernames[1])
                 self.close()
                 return
 
-            print("설마")
             if usernames[0] != usernames[1]:
-                print("마사카")
-                self.conversation, created = Conversation.objects.get_or_create(
-                    name=self.conversation_name
-                )
+                if not (
+                    Conversation.objects.filter(
+                        name=usernames[0], name=usernames[1]
+                    ).exists()
+                ):
+                    self.conversation, created = Conversation.objects.get_or_create(
+                        name=self.conversation_name
+                    )
+                else:
+                    if Conversation.objects.get(
+                        name=f"{usernames[0]}__{usernames[1]}"
+                    ).exists():
+                        self.conversation = Conversation.objects.get(
+                            name=f"{usernames[0]}__{usernames[1]}"
+                        )
+                        self.conversation_name = f"{usernames[0]}__{usernames[1]}"
+                    else:
+                        self.conversation = Conversation.objects.get(
+                            name=f"{usernames[1]}__{usernames[0]}"
+                        )
+                        self.conversation_name = f"{usernames[1]}__{usernames[0]}"
 
             async_to_sync(self.channel_layer.group_add)(
                 self.conversation_name,
@@ -226,7 +238,7 @@ class NotificationConsumer(JsonWebsocketConsumer):
                 self.notification_group_name,
                 self.channel_name,
             )
-
+            # 방이 가지고 있는 메세지 중에 나한테 온건데 read가 false인것
             unread_count = Message.objects.filter(to_user=self.user, read=False).count()
             self.send_json(
                 {

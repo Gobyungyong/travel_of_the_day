@@ -1,10 +1,11 @@
 import { useState, useContext, useEffect, useRef } from "react";
 import useWebSocket, { ReadyState } from "react-use-websocket";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 import { AuthContext } from "../contexts/AuthContext";
 import Loading from "../components/uiux/Loading";
+import routes from "../routes";
 
 function Chattings() {
   const { conversationName } = useParams();
@@ -19,6 +20,8 @@ function Chattings() {
   const [participants, setParticipants] = useState([]);
   const [conversation, setConversation] = useState();
 
+  const navigate = useNavigate();
+
   const { user, authAxios } = useContext(AuthContext);
 
   async function getUserInfo() {
@@ -32,10 +35,17 @@ function Chattings() {
     const res = await authAxios.get(`api/v1/chattings/${conversationName}/`);
     if (res?.status === 202) {
       await setConversation(res.data);
+    } else {
+      navigate(routes.homepage, { replace: true });
     }
   }
 
   useEffect(() => {
+    const conversationUsers = conversationName.split("__");
+    if (conversationUsers[0] === conversationUsers[1]) {
+      alert("본인과의 대화는 지원하지 않습니다.");
+      navigate(routes.homepage, { replace: true });
+    }
     const noTimeout = () => clearTimeout(timeout.current);
     getUserInfo();
     getConversationInfo();

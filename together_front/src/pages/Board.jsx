@@ -135,9 +135,11 @@ function Board() {
           수정
         </button>
       ) : null}
-      <Link to={`/chattings/${board.writer.username}__${user?.username}`}>
-        <div>{board.writer.username}</div>
-      </Link>
+      {board.writer.id === user.id ? (
+        <Link to={`/chattings/${board.writer.username}__${user?.username}`}>
+          <div>{board.writer.username}</div>
+        </Link>
+      ) : null}
       <form onSubmit={handleSubmit(onValid)}>
         <textarea {...register("content")} />
         <button>댓글</button>
