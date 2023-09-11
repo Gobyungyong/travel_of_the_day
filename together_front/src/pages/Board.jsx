@@ -130,16 +130,16 @@ function Board() {
       {board.writer.id === user.id || user.is_staff ? (
         <button onClick={deleteBoard}>삭제</button>
       ) : null}
-      {board.writer.id === user.id || user.is_staff ? (
+      {board.is_writer || user.is_staff ? (
         <button onClick={() => navigate(`/board/modifier/${boardId}`)}>
           수정
         </button>
       ) : null}
-      {board.writer.id === user.id ? (
+      {board.is_writer ? null : (
         <Link to={`/chattings/${board.writer.username}__${user?.username}`}>
           <div>{board.writer.username}</div>
         </Link>
-      ) : null}
+      )}
       <form onSubmit={handleSubmit(onValid)}>
         <textarea {...register("content")} />
         <button>댓글</button>

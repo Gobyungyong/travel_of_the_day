@@ -33,10 +33,8 @@ function Chattings() {
 
   async function getConversationInfo() {
     const res = await authAxios.get(`api/v1/chattings/${conversationName}/`);
-    if (res?.status === 202) {
+    if (res.status === 202) {
       await setConversation(res.data);
-    } else {
-      navigate(routes.homepage, { replace: true });
     }
   }
 
