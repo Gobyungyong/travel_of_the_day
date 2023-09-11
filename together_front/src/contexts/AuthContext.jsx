@@ -7,6 +7,7 @@ import AuthFunc from "../utils/AuthFunc";
 import routes from "../routes";
 
 const DefaultProps = {
+  signup: () => null,
   login: () => null,
   logout: () => null,
   authAxios: axios,
@@ -19,6 +20,11 @@ export const AuthContextProvider = ({ children }) => {
   const navigate = useNavigate();
   // user === access_token
   const [user, setUser] = useState(() => AuthFunc.getCurrentUser());
+
+  function signup(access, refresh) {
+    AuthFunc.setUserInLocalStorage(access, refresh);
+    setUser(access);
+  }
 
   async function login(username, password) {
     const data = await AuthFunc.login(username, password); // return access_token
@@ -85,7 +91,7 @@ export const AuthContextProvider = ({ children }) => {
   );
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, authAxios }}>
+    <AuthContext.Provider value={{ user, login, logout, authAxios, signup }}>
       {children}
     </AuthContext.Provider>
   );
