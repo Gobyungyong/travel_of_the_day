@@ -27,7 +27,7 @@ class NewBoard(APIView):
 
 class AllBoards(APIView):
     def get(self, request):
-        boards = Board.objects.all()
+        boards = Board.objects.all().order_by("-created_at")
 
         return Response(
             BoardInfoSerializer(boards, context={"request": request}, many=True).data,
