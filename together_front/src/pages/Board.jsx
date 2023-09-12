@@ -30,7 +30,7 @@ function Board() {
 
   useEffect(() => {
     getBoardDetail();
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     if (formState.isSubmitSuccessful) {
@@ -39,6 +39,10 @@ function Board() {
   }, [formState]);
 
   async function onValid(data) {
+    if (!user) {
+      alert("로그인 후 이용 가능한 서비스입니다.");
+      navigate(routes.login);
+    }
     const content = data.content;
     await authAxios.post("api/v1/comments/new/", {
       content,
@@ -49,6 +53,10 @@ function Board() {
 
   async function recommentOnValid(event, comment_id) {
     event.preventDefault();
+    if (!user) {
+      alert("로그인 후 이용 가능한 서비스입니다.");
+      navigate(routes.login);
+    }
     const content = event.target.content.value;
     await authAxios.post("api/v1/recomments/new/", {
       content,
@@ -69,6 +77,10 @@ function Board() {
   }
 
   async function deleteBoard() {
+    if (!user) {
+      alert("로그인 후 이용 가능한 서비스입니다.");
+      navigate(routes.login);
+    }
     if (board.is_writer || user.is_staff) {
       if (window.confirm("게시글을 삭제하시겠습니까?")) {
         try {
@@ -87,40 +99,40 @@ function Board() {
     return <Loading />;
   }
 
-  if (!user) {
-    function onClickHandler() {
-      alert("로그인 후 이용 가능한 서비스입니다.");
-      navigate(routes.login);
-    }
-    return (
-      <>
-        <div>제목:{board.subject}</div>
-        <div>작성자:{board.writer.username}</div>
-        <div>내용:{board.content}</div>
-        <button onClick={onClickHandler}>
-          <div>{board.writer.username}</div>
-        </button>
-        <form onSubmit={handleSubmit(onValid)}>
-          <textarea {...register("content")} />
-          <button>댓글</button>
-        </form>
-        {board.comment_set.map((comment) => (
-          <div key={comment.id}>
-            {comment.writer.username} : {comment.content}
-            <form onSubmit={(e) => recommentOnValid(e, comment.id)}>
-              <textarea name="content" />
-              <button>대댓글</button>
-            </form>
-            {comment.recomment_set?.map((recomment) => (
-              <div key={recomment?.id}>
-                {recomment?.writer.username} : {recomment?.content}
-              </div>
-            ))}
-          </div>
-        ))}
-      </>
-    );
-  }
+  // if (!user) {
+  //   function onClickHandler() {
+  //     alert("로그인 후 이용 가능한 서비스입니다.");
+  //     navigate(routes.login);
+  //   }
+  //   return (
+  //     <>
+  //       <div>제목:{board.subject}</div>
+  //       <div>작성자:{board.writer.username}</div>
+  //       <div>내용:{board.content}</div>
+  //       <button onClick={onClickHandler}>
+  //         <div>{board.writer.username}</div>
+  //       </button>
+  //       <form onSubmit={handleSubmit(onValid)}>
+  //         <textarea {...register("content")} />
+  //         <button>댓글</button>
+  //       </form>
+  //       {board.comment_set.map((comment) => (
+  //         <div key={comment.id}>
+  //           {comment.writer.username} : {comment.content}
+  //           <form onSubmit={(e) => recommentOnValid(e, comment.id)}>
+  //             <textarea name="content" />
+  //             <button>대댓글</button>
+  //           </form>
+  //           {comment.recomment_set?.map((recomment) => (
+  //             <div key={recomment?.id}>
+  //               {recomment?.writer.username} : {recomment?.content}
+  //             </div>
+  //           ))}
+  //         </div>
+  //       ))}
+  //     </>
+  //   );
+  // }
 
   function createConversationName(username) {
     const namesAlph = [user?.username, username].sort();
@@ -132,10 +144,10 @@ function Board() {
       <div>제목:{board.subject}</div>
       <div>작성자:{board.writer.username}</div>
       <div>내용:{board.content}</div>
-      {board.is_writer || user.is_staff ? (
+      {board.is_writer || user?.is_staff ? (
         <button onClick={deleteBoard}>삭제</button>
       ) : null}
-      {board.is_writer || user.is_staff ? (
+      {board.is_writer || user?.is_staff ? (
         <button onClick={() => navigate(`/board/modifier/${boardId}`)}>
           수정
         </button>

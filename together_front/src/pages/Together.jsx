@@ -130,7 +130,7 @@ function Together() {
                     <p className="mt-5 px-2 line-clamp-3 text-sm leading-6 text-gray-600">
                       {board.content}
                     </p>
-                    <p className="mt-3 flex space-x-3 absolute right-0 ">
+                    <p className="mt-3 flex space-x-3 absolute right-0 top-0">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"

@@ -46,9 +46,12 @@ function Chattings() {
     }
     const noTimeout = () => clearTimeout(timeout.current);
     getUserInfo();
-    getConversationInfo();
     noTimeout();
   }, []);
+
+  useEffect(() => {
+    getConversationInfo();
+  }, [username]);
 
   const { readyState, sendJsonMessage } = useWebSocket(
     user ? `ws://127.0.0.1:8000/chattings/${conversationName}/` : null,
@@ -62,7 +65,7 @@ function Chattings() {
       onClose: (e) => {
         console.log("Disconnected!", e);
         if (e.code === 1006) {
-          getUserInfo();
+          setTimeout(getUserInfo, 1000);
         }
       },
       onMessage: (e) => {
