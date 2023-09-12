@@ -31,7 +31,7 @@ function Navbar() {
       >
         <div className="max-w-5xl mx-auto flex flex-wrap justify-between items-center">
           <Link to="/" className="flex items-center">
-            <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">
+            <span className="self-center text-2xl md:text-xl font-semibold whitespace-nowrap dark:text-white">
               같이갈래?
             </span>
           </Link>
@@ -45,7 +45,7 @@ function Navbar() {
           >
             <span className="sr-only">Open main menu</span>
             <svg
-              className="w-6 h-6"
+              className="w-7 h-7"
               fill="currentColor"
               viewBox="0 0 20 20"
               xmlns="http://www.w3.org/2000/svg"
