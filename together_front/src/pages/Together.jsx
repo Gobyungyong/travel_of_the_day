@@ -112,11 +112,11 @@ function Together() {
                 >
                   <div className="flex items-center gap-x-4 text-xs">
                     <time
-                      dateTime={formatMessageTimestamp(board.created_at).date}
+                      dateTime={formatMessageTimestamp(board.updated_at).date}
                       className="text-gray-500"
                     >
-                      <div>{formatMessageTimestamp(board.created_at).date}</div>
-                      {formatMessageTimestamp(board.created_at).hours}
+                      <div>{formatMessageTimestamp(board.updated_at).date}</div>
+                      {formatMessageTimestamp(board.updated_at).hours}
                     </time>
                   </div>
                   <div className="group relative w-full">
