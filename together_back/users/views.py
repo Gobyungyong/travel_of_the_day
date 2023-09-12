@@ -25,7 +25,6 @@ class Signup(APIView):
                 username=request.data["username"],
                 name=request.data["name"],
                 password=request.data["password"],
-                email=request.data["email"],
                 nickname=request.data["nickname"],
                 avatar=request.data["avatar"],
             )

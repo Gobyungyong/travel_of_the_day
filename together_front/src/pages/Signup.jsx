@@ -47,7 +47,7 @@ function Signup() {
 
     await S3.putObject({
       Bucket: bucket_name,
-      Key: `profile/${data.username}/${imageFile.name}`,
+      Key: `profile/${data.username}/${data.username}`,
       ACL: "public-read",
       Body: imageFile,
     })
@@ -59,7 +59,7 @@ function Signup() {
             name: data.name,
             password: data.password,
             nickname: data.nickname,
-            avatar: `https://kr.object.ncloudstorage.com/travel-together/profile/${data.username}/${imageFile.name}`,
+            avatar: `https://kr.object.ncloudstorage.com/travel-together/profile/${data.username}/${data.username}`,
           });
           signup(response.data.access, response.data.refresh);
           navigate(routes.homepage, { replace: true });
