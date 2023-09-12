@@ -32,7 +32,7 @@
 //         <div className="max-w-5xl mx-auto flex flex-wrap justify-between items-center">
 //           <Link to="/" className="flex items-center">
 //             <span className="self-center text-2xl md:text-xl font-semibold whitespace-nowrap dark:text-white">
-//               같이갈래?
+//               Travel_Together
 //             </span>
 //           </Link>
 //           <button
@@ -192,7 +192,7 @@ function Navbar() {
           <div className="flex lg:flex-1">
             <Link to="/" className="-m-1.5 p-1.5">
               <span className="self-center text-2xl md:text-xl font-semibold whitespace-nowrap dark:text-white">
-                같이갈래?
+                Travel_Together
               </span>
             </Link>
           </div>
@@ -293,7 +293,7 @@ function Navbar() {
             <div className="flex items-center justify-between">
               <Link to="/" className="-m-1.5 p-1.5">
                 <span className="self-center text-2xl md:text-xl font-semibold whitespace-nowrap dark:text-white">
-                  같이갈래?
+                  Travel_Together
                 </span>
               </Link>
               <button
