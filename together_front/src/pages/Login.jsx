@@ -79,7 +79,6 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 
 import { AuthContext } from "../contexts/AuthContext";
-import { cls } from "../utils/ClassUtil";
 import { Link } from "react-router-dom";
 import routes from "../routes";
 
@@ -98,7 +97,7 @@ function Login() {
   const onLogInSubmit = async (data) => {
     try {
       await login(data.id, data.password);
-      navigate("/", { replace: true });
+      navigate(routes.homepage, { replace: true });
     } catch (error) {
       console.error("로그인 실패:", error);
       setLoginIsFault(true);
