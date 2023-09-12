@@ -69,7 +69,7 @@ function Board() {
   }
 
   async function deleteBoard() {
-    if (board.writer.id === user.id) {
+    if (board.is_writer || user.is_staff) {
       if (window.confirm("게시글을 삭제하시겠습니까?")) {
         try {
           await authAxios.delete(`api/v1/boards/${boardId}/`);
@@ -132,7 +132,7 @@ function Board() {
       <div>제목:{board.subject}</div>
       <div>작성자:{board.writer.username}</div>
       <div>내용:{board.content}</div>
-      {board.writer.id === user.id || user.is_staff ? (
+      {board.is_writer || user.is_staff ? (
         <button onClick={deleteBoard}>삭제</button>
       ) : null}
       {board.is_writer || user.is_staff ? (

@@ -13,12 +13,11 @@ export const NotificationContext = createContext(DefaultProps);
 export const NotificationContextProvider = ({ children }) => {
   const { user } = useContext(AuthContext);
   const [unreadMessageCount, setUnreadMessageCount] = useState(0);
-
   const { readyState } = useWebSocket(
     user ? `ws://127.0.0.1:8000/notifications/` : null,
     {
       queryParams: {
-        token: user ? user.token : "",
+        token: user ? user : "",
       },
       onOpen: () => {
         console.log("Connected to Notifications!");

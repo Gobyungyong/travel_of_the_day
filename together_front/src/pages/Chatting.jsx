@@ -54,7 +54,7 @@ function Chattings() {
     user ? `ws://127.0.0.1:8000/chattings/${conversationName}/` : null,
     {
       queryParams: {
-        token: user ? user.token : "",
+        token: user ? user : "",
       },
       onOpen: (e) => {
         console.log("Connected!", e);
