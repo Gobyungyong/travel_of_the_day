@@ -169,7 +169,9 @@ class ChattingConsumer(JsonWebsocketConsumer):
                 {
                     "type": "new_messages",
                     "conversations": UnreadConversationSerializer(
-                        conversations, many=True, context={"user": self.get_receiver()}
+                        conversations,
+                        many=True,
+                        context={"user": self.get_receiver()},
                     ).data,
                 },
             )
