@@ -54,16 +54,11 @@ class ChattingConsumer(JsonWebsocketConsumer):
                         name=self.conversation_name
                     )
                 else:
-                    if Conversation.objects.get(name=f"{usernames[0]}__{usernames[1]}"):
-                        self.conversation = Conversation.objects.get(
-                            name=f"{usernames[0]}__{usernames[1]}"
-                        )
-                        self.conversation_name = f"{usernames[0]}__{usernames[1]}"
-                    else:
-                        self.conversation = Conversation.objects.get(
-                            name=f"{usernames[1]}__{usernames[0]}"
-                        )
-                        self.conversation_name = f"{usernames[1]}__{usernames[0]}"
+                    self.conversation = Conversation.objects.filter(
+                        name__contains=usernames[0]
+                    ).filter(name__contains=usernames[1])[0]
+
+                    self.conversation_name = self.conversation.name
 
             # 여기까지
 
