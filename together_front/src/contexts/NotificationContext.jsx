@@ -18,7 +18,7 @@ export const NotificationContextProvider = ({ children }) => {
     user ? `ws://127.0.0.1:8000/notifications/` : null,
     {
       queryParams: {
-        token: user ? user : "",
+        token: user ? user.token : "",
       },
       onOpen: () => {
         console.log("Connected to Notifications!");

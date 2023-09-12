@@ -27,7 +27,7 @@ class AuthFunc {
   async logout() {
     try {
       const refresh = localStorage.getItem("refresh_token");
-      const access_token = localStorage.getItem("access_token");
+
       const response = await axios.post(
         "http://localhost:8000/api/v1/users/logout/",
         {
@@ -42,8 +42,12 @@ class AuthFunc {
     }
   }
 
-  getCurrentUser() {
-    return localStorage.getItem("access_token");
+  async getCurrentUser() {
+    const access_token = localStorage.getItem("access_token");
+    const response = await axios.get("api/v1/users/myinfo/", {
+      headers: { Authorization: `Bearer ${access_token}` },
+    });
+    return { ...response.data, token: access_token };
   }
 }
 

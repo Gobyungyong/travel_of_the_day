@@ -28,8 +28,8 @@ export const AuthContextProvider = ({ children }) => {
 
   async function login(username, password) {
     const data = await AuthFunc.login(username, password); // return access_token
-    setUser(data);
-    return data; // === access_token
+    await setUser(() => AuthFunc.getCurrentUser());
+    return user; // === access_token
   }
 
   function logout() {
@@ -68,7 +68,7 @@ export const AuthContextProvider = ({ children }) => {
         if (response.status === 200) {
           error.config.headers["Authorization"] = `Bearer
        ${response.data["access"]}`;
-          setUser(response.data.access);
+          await setUser(() => AuthFunc.getCurrentUser());
           localStorage.setItem("access_token", response.data.access);
           localStorage.setItem("refresh_token", response.data.refresh);
           return authAxios(error.config);
