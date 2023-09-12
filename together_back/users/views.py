@@ -66,7 +66,7 @@ class CheckUsername(APIView):
             raise ParseError("아이디 값이 없습니다.")
         if User.objects.filter(username=username).exists():
             return Response(
-                {"errors": "이미 존재하는 아이디입니다."},
+                {"message": "이미 존재하는 아이디입니다."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
