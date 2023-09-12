@@ -2,9 +2,10 @@ import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { AuthContext } from "../contexts/AuthContext";
+import Loading from "../components/uiux/Loading";
 
 function Together() {
-  const [boards, setBoards] = useState();
+  const [boards, setBoards] = useState([]);
   const [user, setUser] = useState(null);
 
   const { authAxios, user: loggedinUser } = useContext(AuthContext);
@@ -168,8 +169,12 @@ function Together() {
                   </div>
                 </article>
               ))
+            ) : !(boards?.length() === 0) ? (
+              <div className="text-center lg:w-full">
+                게시글이 존재하지 않습니다.
+              </div>
             ) : (
-              <div>게시글이 존재하지 않습니다.</div>
+              <Loading />
             )}
           </div>
         </div>
