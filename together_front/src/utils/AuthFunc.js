@@ -38,7 +38,6 @@ class AuthFunc {
       return response;
     } catch {
       localStorage.clear();
-      throw new Error("이미 만료된 리프레쉬 토큰");
     }
   }
 
