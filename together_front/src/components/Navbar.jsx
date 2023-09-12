@@ -206,9 +206,17 @@ function Navbar() {
               <Bars3Icon className="h-6 w-6" aria-hidden="true" />
             </button>
           </div>
-          <div className="hidden lg:flex lg:gap-x-12">
-            {!user ? (
-              <>
+
+          {!user ? (
+            <>
+              <div className="hidden lg:flex lg:gap-x-12">
+                <Link
+                  to={routes.homepage}
+                  className="text-sm font-semibold leading-6 text-gray-900"
+                  onClick={buttonClickHandler}
+                >
+                  게시글목록
+                </Link>
                 <Link
                   to={routes.login}
                   className="text-sm font-semibold leading-6 text-gray-900"
@@ -224,9 +232,18 @@ function Navbar() {
                 >
                   회원가입
                 </Link>
-              </>
-            ) : (
-              <>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="hidden lg:flex lg:gap-x-12">
+                <Link
+                  to={routes.homepage}
+                  className="text-sm font-semibold leading-6 text-gray-900"
+                  onClick={buttonClickHandler}
+                >
+                  게시글목록
+                </Link>
                 <Link
                   to={routes.newBoard}
                   className="text-sm font-semibold leading-6 text-gray-900"
@@ -252,26 +269,18 @@ function Navbar() {
                     )}
                   </span>
                 </Link>
-
+              </div>
+              <div className="hidden lg:flex lg:flex-1 lg:justify-end">
                 <button
                   className="text-sm font-semibold leading-6 text-gray-900"
                   onClick={logout}
                 >
                   로그아웃
                 </button>
-              </>
-            )}
-          </div>
-          <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-            <Link
-              to={routes.homepage}
-              className="text-sm font-semibold leading-6 text-gray-900"
-              onClick={buttonClickHandler}
-            >
-              게시글목록
-            </Link>
-            <span aria-hidden="true">&rarr;</span>
-          </div>
+                <span aria-hidden="true">&rarr;</span>
+              </div>
+            </>
+          )}
         </nav>
         <Dialog
           as="div"
@@ -351,16 +360,19 @@ function Navbar() {
                           )}
                         </span>
                       </Link>
-
-                      <button
-                        className="mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50block py-2 pr-4 pl-3 text-black md:p-0 dark:text-white"
-                        onClick={logout}
-                      >
-                        로그아웃
-                      </button>
                     </>
                   )}
                 </div>
+                {user ? (
+                  <div className="py-6">
+                    <Link
+                      className="mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                      onClick={logout}
+                    >
+                      로그아웃
+                    </Link>
+                  </div>
+                ) : null}
               </div>
             </div>
           </Dialog.Panel>
