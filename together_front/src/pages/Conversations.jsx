@@ -1,23 +1,57 @@
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";
 
 import { AuthContext } from "../contexts/AuthContext";
 import Loading from "../components/uiux/Loading";
 
 function Conversations() {
-  const { authAxios } = useContext(AuthContext);
+  const { authAxios, user: loggedinUser } = useContext(AuthContext);
   const [conversations, setConversations] = useState([]);
   const [user, setUser] = useState();
 
-  async function getConversationList() {
-    try {
-      const res = await authAxios("api/v1/chattings/conversations/");
-      setConversations(res.data);
-      console.log("res", res);
-    } catch {
-      return;
+  const { readyState, sendJsonMessage } = useWebSocket(
+    user ? `ws://127.0.0.1:8000/conversations/` : null,
+    {
+      queryParams: {
+        token: loggedinUser ? loggedinUser : "",
+      },
+      onOpen: (e) => {
+        console.log("Connected!", e);
+      },
+      onClose: (e) => {
+        console.log("Disconnected!", e);
+        if (e.code === 1006) {
+          getUserInfo();
+        }
+      },
+      onMessage: (e) => {
+        const data = JSON.parse(e.data);
+        switch (data.type) {
+          case "conversations":
+            setConversations(data.conversations);
+            console.log("converrsations다임마", conversations);
+            break;
+
+          case "new_messages":
+            setConversations(data.conversations);
+
+          default:
+            console.error("Unknown message type!");
+        }
+      },
     }
-  }
+  );
+
+  // async function getConversationList() {
+  //   try {
+  //     const res = await authAxios("api/v1/chattings/conversations/");
+  //     setConversations(res.data);
+  //     console.log("res", res);
+  //   } catch {
+  //     return;
+  //   }
+  // }
 
   async function getUserInfo() {
     const res = await authAxios.get("api/v1/users/myinfo/");
@@ -28,9 +62,9 @@ function Conversations() {
     getUserInfo();
   }, []);
 
-  useEffect(() => {
-    getConversationList();
-  }, [user]);
+  // useEffect(() => {
+  //   getConversationList();
+  // }, [user]);
 
   function createConversationName(username) {
     const namesAlph = [user?.username, username].sort();
@@ -59,8 +93,8 @@ function Conversations() {
     return <Loading />;
   }
 
-  if (!conversations) {
-    return <div>채팅방이 없습니다.</div>;
+  if (conversations.length === 0) {
+    return <div>채팅방이 아직 존재하지 않습니다..</div>;
   }
 
   console.log(conversations);
@@ -75,6 +109,7 @@ function Conversations() {
           <div>{formatMessageTimestamp(c.last_message?.timestamp)?.date}</div>
           <div>{formatMessageTimestamp(c.last_message?.timestamp)?.hours}</div>
           <div>마지막 메세지:{c.last_message?.content}</div>
+          <div>안읽은 메세지:{c.unread_messages_count}</div>
         </Link>
       ))}
     </div>

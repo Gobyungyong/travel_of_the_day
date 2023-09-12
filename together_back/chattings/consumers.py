@@ -4,7 +4,7 @@ from rest_framework_simplejwt.tokens import TokenError, AccessToken
 from urllib.parse import parse_qs
 
 from .models import Conversation, Message
-from .serializers import MessageSerializer
+from .serializers import MessageSerializer, UnreadConversationSerializer
 from users.models import User
 
 
@@ -34,6 +34,7 @@ class ChattingConsumer(JsonWebsocketConsumer):
         else:
             print("Connected!")
             self.accept()
+            # 여기부터
             self.conversation_name = self.scope["url_route"]["kwargs"][
                 "conversation_name"
             ]
@@ -45,17 +46,15 @@ class ChattingConsumer(JsonWebsocketConsumer):
 
             if usernames[0] != usernames[1]:
                 if not (
-                    Conversation.objects.filter(
-                        name=usernames[0], name=usernames[1]
-                    ).exists()
+                    Conversation.objects.filter(name__contains=usernames[0]).filter(
+                        name__contains=usernames[1]
+                    )
                 ):
                     self.conversation, created = Conversation.objects.get_or_create(
                         name=self.conversation_name
                     )
                 else:
-                    if Conversation.objects.get(
-                        name=f"{usernames[0]}__{usernames[1]}"
-                    ).exists():
+                    if Conversation.objects.get(name=f"{usernames[0]}__{usernames[1]}"):
                         self.conversation = Conversation.objects.get(
                             name=f"{usernames[0]}__{usernames[1]}"
                         )
@@ -65,6 +64,8 @@ class ChattingConsumer(JsonWebsocketConsumer):
                             name=f"{usernames[1]}__{usernames[0]}"
                         )
                         self.conversation_name = f"{usernames[1]}__{usernames[0]}"
+
+            # 여기까지
 
             async_to_sync(self.channel_layer.group_add)(
                 self.conversation_name,
@@ -162,6 +163,22 @@ class ChattingConsumer(JsonWebsocketConsumer):
                 },
             )
 
+            conversations = Conversation.objects.filter(
+                name__contains=self.get_receiver()
+            )
+            notifications_group_name = (
+                self.get_receiver().username + "__notifications__"
+            )
+            async_to_sync(self.channel_layer.group_send)(
+                notifications_group_name,
+                {
+                    "type": "new_messages",
+                    "conversations": UnreadConversationSerializer(
+                        conversations, many=True, context={"user": self.get_receiver()}
+                    ).data,
+                },
+            )
+
         if message_type == "read_messages":
             messages_to_me = self.conversation.messages.filter(to_user=self.user)
             messages_to_me.update(read=True)
@@ -207,6 +224,9 @@ class ChattingConsumer(JsonWebsocketConsumer):
     def unread_count(self, event):
         self.send_json(event)
 
+    def new_messages(self, event):
+        self.send_json(event)
+
 
 class NotificationConsumer(JsonWebsocketConsumer):
     def __init__(self, *args, **kwargs):
@@ -238,7 +258,6 @@ class NotificationConsumer(JsonWebsocketConsumer):
                 self.notification_group_name,
                 self.channel_name,
             )
-            # 방이 가지고 있는 메세지 중에 나한테 온건데 read가 false인것
             unread_count = Message.objects.filter(to_user=self.user, read=False).count()
             self.send_json(
                 {
@@ -259,4 +278,71 @@ class NotificationConsumer(JsonWebsocketConsumer):
         self.send_json(event)
 
     def unread_count(self, event):
+        self.send_json(event)
+
+
+# 연결됐을 때 채팅목록
+# 방이 가지고 있는 메세지 중에 나한테 온건데 read가 false인것
+
+
+class ConversationNotificationConsumer(JsonWebsocketConsumer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(args, kwargs)
+        self.user = None
+        self.notifications_group_name = None
+
+    def connect(self):
+        query_string = self.scope["query_string"].decode()
+        token_param = parse_qs(query_string).get("token", [""])[0]
+
+        try:
+            access_token = AccessToken(token_param)
+            user_id = access_token.payload["user_id"]
+            user = User.objects.get(id=user_id)
+            self.user = user
+        except TokenError as e:
+            print("채팅방 토큰 에러", e)
+            user = None
+
+        if user is None:
+            print("채팅방 유저가 없다.")
+            self.close()
+        else:
+            self.accept()
+            print("채팅방 연결 성공")
+            self.notifications_group_name = self.user.username + "__notifications__"
+            async_to_sync(self.channel_layer.group_add)(
+                self.notifications_group_name,
+                self.channel_name,
+            )
+            conversations = Conversation.objects.filter(name__contains=self.user)
+
+            active_conversations = [
+                conv for conv in conversations if conv.count_messages() > 0
+            ]
+
+            self.send_json(
+                {
+                    "type": "conversations",
+                    "conversations": UnreadConversationSerializer(
+                        active_conversations, many=True, context={"user": self.user}
+                    ).data,
+                }
+            )
+
+    def disconnect(self, code):
+        print("채팅방 연결 끊김")
+
+        return super().disconnect(code)
+
+    def new_message_notification(self, event):
+        self.send_json(event)
+
+    def unread_count(self, event):
+        self.send_json(event)
+
+    def conversations(self, event):
+        self.send_json(event)
+
+    def new_messages(self, event):
         self.send_json(event)

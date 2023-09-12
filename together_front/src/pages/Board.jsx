@@ -121,6 +121,11 @@ function Board() {
       </>
     );
   }
+
+  function createConversationName(username) {
+    const namesAlph = [user?.username, username].sort();
+    return `${namesAlph[0]}__${namesAlph[1]}`;
+  }
   // 눈에 보이는 username 닉네임으로 변경
   return (
     <>
@@ -136,7 +141,9 @@ function Board() {
         </button>
       ) : null}
       {board.is_writer ? null : (
-        <Link to={`/chattings/${board.writer.username}__${user?.username}`}>
+        <Link
+          to={`/chattings/${createConversationName(board.writer.username)}`}
+        >
           <div>{board.writer.username}</div>
         </Link>
       )}
