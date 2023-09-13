@@ -29,7 +29,6 @@ function BoardEditer() {
       onSubmit={handleSubmit(onValid)}
       className="flex flex-col space-y-4 px-4 lg:px-48"
     >
-      {/* 30자 */}
       <div className="flex flex-col space-y-4">
         <label className="font-semibold text-2xl text-gray-500">제목</label>
         <input
@@ -49,7 +48,6 @@ function BoardEditer() {
           </small>
         )}
       </div>
-      {/* 512자 */}
       <div className="flex flex-col space-y-4">
         <label className="font-semibold text-2xl text-gray-500">내용</label>
         <textarea
