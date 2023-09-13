@@ -8,7 +8,9 @@ import routes from "../routes";
 
 function Signup() {
   const [isIdAvailable, setIsIdAvailable] = useState(0);
-  const [imageSrc, setImageSrc] = useState(null);
+  const [imageSrc, setImageSrc] = useState(
+    "https://kr.object.ncloudstorage.com/travel-together/profile/basic_profile/basic.png"
+  );
   const [imageFile, setImageFile] = useState(null);
 
   const navigate = useNavigate();
@@ -30,6 +32,22 @@ function Signup() {
   } = useForm();
 
   async function onSignUpSubmit(data) {
+    if (
+      imageSrc ===
+      "https://kr.object.ncloudstorage.com/travel-together/profile/basic_profile/basic.png"
+    ) {
+      const response = await authAxios.post("api/v1/users/signup/", {
+        username: data.username,
+        name: data.name,
+        password: data.password,
+        nickname: data.nickname,
+        avatar:
+          "https://kr.object.ncloudstorage.com/travel-together/profile/basic_profile/basic.png",
+      });
+      signup(response.data.access, response.data.refresh);
+      navigate(routes.homepage, { replace: true });
+      return;
+    }
     const endpoint = new AWS.Endpoint("https://kr.object.ncloudstorage.com");
     const region = process.env.REACT_APP_REGION;
     const access_key = process.env.REACT_APP_ACCESS_KEY;
