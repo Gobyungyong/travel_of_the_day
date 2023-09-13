@@ -35,7 +35,7 @@ export const AuthContextProvider = ({ children }) => {
   function logout() {
     AuthFunc.logout();
     setUser(null);
-    navigate(routes.index); // landing
+    navigate(routes.homepage); // landing
   }
 
   const authAxios = axios.create({
