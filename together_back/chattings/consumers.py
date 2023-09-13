@@ -319,13 +319,15 @@ class ConversationNotificationConsumer(JsonWebsocketConsumer):
                 self.channel_name,
             )
             conversations = Conversation.objects.filter(
-                Q(name__startswith=f"{self.user}__")
-                or Q(name__endswith=f"__{self.user}")
+                Q(name__istartswith=f"{self.user.username}__")
+                | Q(name__iendswith=f"__{self.user.username}")
             )
-
+            print("conversations", conversations)
+            print("self.user.username", self.user.username)
             active_conversations = [
                 conv for conv in conversations if conv.count_messages() > 0
             ]
+            print("active_conversations", active_conversations)
 
             self.send_json(
                 {
