@@ -8,6 +8,7 @@ import routes from "../routes";
 
 function Signup() {
   const [isIdAvailable, setIsIdAvailable] = useState(0);
+  const [isNicknameAvailable, setIsNicknameAvailable] = useState(0);
   const [imageSrc, setImageSrc] = useState(
     "https://kr.object.ncloudstorage.com/travel-together/profile/basic_profile/basic.png"
   );
@@ -154,6 +155,24 @@ function Signup() {
         clearErrors("username");
       } else {
         setIsIdAvailable(-1);
+      }
+    } catch (error) {
+      console.error("중복확인 실패:", error);
+    }
+  }
+
+  async function checkNicknameAvailability() {
+    const nickname = getValues("nickname");
+    try {
+      const response = await authAxios.post("api/v1/users/check_nickname/", {
+        nickname,
+      });
+
+      if (response.status === 200) {
+        setIsNicknameAvailable(2);
+        clearErrors("nickname");
+      } else {
+        setIsNicknameAvailable(-2);
       }
     } catch (error) {
       console.error("중복확인 실패:", error);
@@ -451,8 +470,18 @@ function Signup() {
                       message: "2자리 이상 입력해주세요.",
                     },
                   })}
+                  onBlur={checkNicknameAvailability}
                 />
-
+                {isNicknameAvailable === 2 && (
+                  <small className="text-green-500 font-semibold">
+                    사용 가능한 닉네임입니다.
+                  </small>
+                )}
+                {!(isNicknameAvailable === -2) || (
+                  <small role="alert" className="text-red-500 font-semibold">
+                    이미 사용 중인 닉네임입니다.
+                  </small>
+                )}
                 {errors.nickname && (
                   <small className="text-red-500 font-semibold" role="alert">
                     {errors.nickname.message}

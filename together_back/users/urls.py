@@ -9,4 +9,5 @@ urlpatterns = [
     path("logout/", views.Logout.as_view()),
     path("myinfo/", views.UserInfo.as_view()),
     path("check_username/", views.CheckUsername.as_view()),
+    path("check_nickname/", views.CheckNickname.as_view()),
 ]

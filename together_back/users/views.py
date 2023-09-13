@@ -72,6 +72,20 @@ class CheckUsername(APIView):
         return Response({"message": "사용가능한 아이디입니다."}, status=status.HTTP_200_OK)
 
 
+class CheckNickname(APIView):
+    def post(self, request):
+        nickname = request.data["nickname"]
+        if not nickname:
+            raise ParseError("닉네임 값이 없습니다.")
+        if User.objects.filter(nickname=nickname).exists():
+            return Response(
+                {"message": "이미 존재하는 닉네임입니다."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        return Response({"message": "사용가능한 닉네임입니다."}, status=status.HTTP_200_OK)
+
+
 class UserInfo(APIView):
     permission_classes = [IsAuthenticated]
 
