@@ -2,7 +2,7 @@ import { useState, useContext, useEffect, useRef } from "react";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import { useParams, useNavigate } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { Avatar, AvatarBadge, AvatarGroup } from "@chakra-ui/react";
+import { Avatar, AvatarBadge } from "@chakra-ui/react";
 
 import { AuthContext } from "../contexts/AuthContext";
 import Loading from "../components/uiux/Loading";
@@ -164,8 +164,8 @@ function Chattings() {
 
     const formattedDate = {
       year: date.getFullYear(),
-      month: date.getMonth(),
-      day: date.getDay(),
+      month: String(date.getMonth()).padStart(2, "0"),
+      day: String(date.getDay()).padStart(2, "0"),
       hour: String(date.getHours()).padStart(2, "0"),
       minute: String(date.getMinutes()).padStart(2, "0"),
     };
@@ -254,11 +254,16 @@ function Chattings() {
                 message?.from_user?.username === username ? (
                   <li key={i} className="flex flex-col">
                     <div className="flex flex-row-reverse">
-                      <div className="border border-gray-200 bg-gray-100 w-1/2 md:w-1/3 rounded-md mb-4 px-2 text-right">
+                      <div className="border border-gray-200 bg-gray-100 w-1/2 md:w-1/3 rounded-md mb-2 px-2 text-right">
                         {message?.content}
                       </div>
-                      <div className="text-sm text-gray-500 my-auto mx-1">
-                        {formatMessageTimestamp(message?.timestamp)?.hours}
+                      <div className="text-xs text-gray-500 my-auto mx-1 mb-2">
+                        <p>
+                          {formatMessageTimestamp(message?.timestamp)?.date}
+                        </p>
+                        <p className="text-right">
+                          {formatMessageTimestamp(message?.timestamp)?.hours}
+                        </p>
                       </div>
                     </div>
                   </li>
@@ -271,8 +276,13 @@ function Chattings() {
                       <div className="border border-blue-200 bg-blue-100 md:w-1/3 w-1/2 rounded-md mb-2 px-2">
                         {message?.content}
                       </div>
-                      <div className="text-sm text-gray-500 my-auto mx-1">
-                        {formatMessageTimestamp(message?.timestamp)?.hours}
+                      <div className="text-xs text-gray-500 my-auto mx-1 mb-2">
+                        <p>
+                          {formatMessageTimestamp(message?.timestamp)?.date}
+                        </p>
+                        <p>
+                          {formatMessageTimestamp(message?.timestamp)?.hours}
+                        </p>
                       </div>
                     </div>
                   </li>
