@@ -36,8 +36,8 @@ function BoardEditer() {
           {...register("subject", {
             required: "제목을 입력해주세요.",
             maxLength: {
-              value: 15,
-              message: "제목은 15자를 넘을 수 없습니다.",
+              value: 50,
+              message: "제목은 50자를 넘을 수 없습니다.",
             },
           })}
           className="border border-indigo-400 p-2 rounded-md focus:outline-none focus:border-indigo-700 focus:border-2"
