@@ -212,10 +212,10 @@ function Chattings() {
       {conversation && (
         <div className="py-6">
           <h3 className="text-3xl font-semibold text-gray-900">
-            대화상대: {conversation?.other_user?.username}
+            대화상대: {conversation?.other_user?.nickname}
           </h3>
           <span className="text-sm">
-            {conversation?.other_user?.username}
+            {conversation?.other_user?.nickname}
             {participants.includes(conversation.other_user?.username)
               ? " online"
               : " offline"}
