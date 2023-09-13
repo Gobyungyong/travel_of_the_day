@@ -10,4 +10,5 @@ urlpatterns = [
     path("myinfo/", views.UserInfo.as_view()),
     path("check_username/", views.CheckUsername.as_view()),
     path("check_nickname/", views.CheckNickname.as_view()),
+    path("exit/", views.UserDelete.as_view()),
 ]

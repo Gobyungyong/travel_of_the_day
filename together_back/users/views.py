@@ -133,12 +133,6 @@ class UserDelete(APIView):
 
         if user != request.user:
             raise PermissionDenied("권한이 없습니다.")
-        try:
-            refresh_token = request.data["refresh"]
-            token = RefreshToken(refresh_token)
-            token.blacklist()
-        except Exception as e:
-            return Response(e, status=status.HTTP_400_BAD_REQUEST)
 
         user.is_active = False
         user.save()
