@@ -117,7 +117,7 @@ function Together() {
               boards.map((board) => (
                 <article
                   key={board.id}
-                  className="flex px-4 max-w-xl flex-col items-start justify-between lg:border lg:border-s-2 lg:py-4 not:last-child:"
+                  className="flex px-4 max-w-xl flex-col items-start justify-between lg:border lg:border-s-2 lg:py-4"
                 >
                   <div className="flex items-center gap-x-4 text-xs w-full">
                     <time
