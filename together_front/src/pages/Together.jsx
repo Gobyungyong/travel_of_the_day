@@ -131,9 +131,9 @@ function Together() {
                     </time>
                   </div>
                   <div className="group relative w-full">
-                    <h3 className="mt-3 text-lg font-semibold leading-6 text-gray-900 group-hover:text-gray-600">
+                    <h3 className="mt-3 text-lg font-semibold leading-6 text-gray-900 w-10/12 lg:w-9/12 group-hover:text-gray-600">
                       <Link to={`/board/${board.id}`}>
-                        <span className="absolute inset-0" />
+                        {/* <span className="absolute inset-0" /> */}
                         {board.subject}
                       </Link>
                     </h3>
