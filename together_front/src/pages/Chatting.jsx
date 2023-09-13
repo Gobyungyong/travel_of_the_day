@@ -2,6 +2,7 @@ import { useState, useContext, useEffect, useRef } from "react";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import { useParams, useNavigate } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { Avatar, AvatarBadge, AvatarGroup } from "@chakra-ui/react";
 
 import { AuthContext } from "../contexts/AuthContext";
 import Loading from "../components/uiux/Loading";
@@ -205,63 +206,102 @@ function Chattings() {
 
   return (
     <>
-      <div>
+      {/* <div>
         <span>The WebSocket is currently {connectionStatus}</span>
-      </div>
+      </div> */}
       {/* online */}
-      {conversation && (
-        <div className="py-6">
+      {
+        <div className="pb-6 px-3 md:px-5">
+          {participants.includes(conversation?.other_user?.username) ? (
+            <Avatar src={conversation?.other_user?.avatar}>
+              <AvatarBadge boxSize="1.25em" bg="green.500" />
+            </Avatar>
+          ) : (
+            <Avatar src={conversation?.other_user?.avatar}>
+              <AvatarBadge bg="gray" boxSize="1.25em" />
+            </Avatar>
+          )}
           <h3 className="text-3xl font-semibold text-gray-900">
-            대화상대: {conversation?.other_user?.nickname}
+            {conversation?.other_user?.nickname}님과의 대화
           </h3>
-          <span className="text-sm">
-            {conversation?.other_user?.nickname}
-            {participants.includes(conversation.other_user?.username)
-              ? " online"
-              : " offline"}
-          </span>
         </div>
-      )}
+      }
 
       <hr />
-      <div
-        id="infinityScroll"
-        style={{
-          height: 300,
-          overflow: "scroll",
-          display: "flex",
-          flexDirection: "column-reverse",
-        }}
-      >
-        <InfiniteScroll
-          style={{ display: "flex", flexDirection: "column-reverse" }}
-          dataLength={messageHistory.length}
-          next={loadMessages}
-          inverse={true}
-          hasMore={hasMoreMessages}
-          loader={<Loading />}
-          scrollableTarget="infinityScroll"
+      <div className="flex justify-center">
+        <div
+          id="infinityScroll"
+          className="h-[40rem] 2xl:h-[45rem] border-gray-200 border-x border-b px-3 overflow-y-scroll scrollbar-hide flex flex-col-reverse w-full md:w-2/3"
         >
-          {messageHistory.map((message, i) => (
-            <div key={i}>
-              {message?.from_user?.username}: {message?.content} -{" "}
-              {formatMessageTimestamp(message?.timestamp)?.hours}
-            </div>
-          ))}
-        </InfiniteScroll>
+          <InfiniteScroll
+            className="flex flex-col-reverse"
+            dataLength={messageHistory.length}
+            next={loadMessages}
+            inverse={true}
+            hasMore={hasMoreMessages}
+            loader={<Loading />}
+            scrollableTarget="infinityScroll"
+          >
+            <ul className="flex flex-col-reverse">
+              {messageHistory.map((message, i) =>
+                message?.from_user?.username === username ? (
+                  <li key={i} className="flex flex-col">
+                    <div className="flex flex-row-reverse">
+                      <div className="border border-gray-200 bg-gray-100 w-1/2 md:w-1/3 rounded-md mb-4 px-2 text-right">
+                        {message?.content}
+                      </div>
+                      <div className="text-sm text-gray-500 my-auto mx-1">
+                        {formatMessageTimestamp(message?.timestamp)?.hours}
+                      </div>
+                    </div>
+                  </li>
+                ) : (
+                  <li key={i} className="flex flex-col">
+                    <div className="font-semibold mb-1">
+                      {message?.from_user?.nickname}
+                    </div>
+                    <div className="flex">
+                      <div className="border border-blue-200 bg-blue-100 md:w-1/3 w-1/2 rounded-md mb-2 px-2">
+                        {message?.content}
+                      </div>
+                      <div className="text-sm text-gray-500 my-auto mx-1">
+                        {formatMessageTimestamp(message?.timestamp)?.hours}
+                      </div>
+                    </div>
+                  </li>
+                )
+              )}
+            </ul>
+          </InfiniteScroll>
+        </div>
       </div>
-      <form onSubmit={handleSubmit}>
-        <input
-          name="message"
-          type="text"
-          required
-          maxLength={511}
-          placeholder="Message"
-          onChange={handleChangeMessage}
-          value={message}
-        />
-        {typing && <p>상대방이 메세지를 입력중입니다...</p>}
-        <button>전송</button>
+
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col items-center justify-center mt-2"
+      >
+        <div className="flex justify-between rounded-md shadow-sm  ring-1  ring-gray-300 w-4/5 md:w-1/2">
+          <div className="rounded-md pl-1 w-full">
+            <input
+              name="message"
+              type="text"
+              required
+              maxLength={511}
+              placeholder="Message"
+              onChange={handleChangeMessage}
+              value={message}
+              className="h-full block w-full  border-0 py-1.5 px-4 text-gray-900 sm:text-sm sm:leading-6 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-indigo-300"
+            />
+          </div>
+          <button className="text-gray-600 mr-1 w-1/5 focus:ring-1 focus:ring-inset focus:ring-indigo-300">
+            보내기
+          </button>
+        </div>
+        {typing && (
+          <p className="text-sm text-gray-700 mt-1">
+            상대방이 메세지를 입력중입니다...
+          </p>
+        )}
       </form>
     </>
   );
