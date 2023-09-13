@@ -39,11 +39,17 @@ class SpecificConversation(APIView):
 
         if usernames[0] == usernames[1]:
             raise ParseError("본인과의 대화는 지원하지 않습니다.")
+
         try:
-            print(conversation_name)
-            conversation = Conversation.objects.filter(
-                name__contains=usernames[0]
-            ).filter(name__contains=usernames[1])[0]
+            print("view 프린트임", conversation_name)
+            try:
+                conversation = Conversation.objects.get(
+                    name=f"{usernames[0]}__{usernames[1]}"
+                )
+            except:
+                conversation = Conversation.objects.get(
+                    name=f"{usernames[1]}__{usernames[0]}"
+                )
         except:
             raise NotFound("채팅방이 없습니다.")
 

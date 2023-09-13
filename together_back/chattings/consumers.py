@@ -46,18 +46,23 @@ class ChattingConsumer(JsonWebsocketConsumer):
 
             if usernames[0] != usernames[1]:
                 if not (
-                    Conversation.objects.filter(name__contains=usernames[0]).filter(
-                        name__contains=usernames[1]
+                    Conversation.objects.filter(name=f"{usernames[0]}__{usernames[1]}")
+                    or Conversation.objects.filter(
+                        name=f"{usernames[1]}__{usernames[0]}"
                     )
                 ):
                     self.conversation, created = Conversation.objects.get_or_create(
                         name=self.conversation_name
                     )
                 else:
-                    self.conversation = Conversation.objects.filter(
-                        name__contains=usernames[0]
-                    ).filter(name__contains=usernames[1])[0]
-
+                    try:
+                        self.conversation = Conversation.objects.get(
+                            name=f"{usernames[0]}__{usernames[1]}"
+                        )
+                    except:
+                        self.conversation = Conversation.objects.get(
+                            name=f"{usernames[1]}__{usernames[0]}"
+                        )
                     self.conversation_name = self.conversation.name
 
             # 여기까지
