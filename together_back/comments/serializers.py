@@ -20,6 +20,7 @@ class RelatedCommentSerializer(ModelSerializer):
     recomment_set = RecommentSerializer(read_only=True, many=True)
     recomments_count = SerializerMethodField()
     writer = UsernameSerializer(read_only=True)
+    is_writer = SerializerMethodField()
 
     class Meta:
         model = Comment
@@ -31,7 +32,11 @@ class RelatedCommentSerializer(ModelSerializer):
             "recomments_count",
             "created_at",
             "updated_at",
+            "is_writer",
         )
 
     def get_recomments_count(self, comment):
         return comment.recomment_set.all().count()
+
+    def get_is_writer(self, board):
+        return board.writer == self.context["request"].user
