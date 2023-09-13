@@ -101,7 +101,10 @@ function Conversations() {
   console.log(conversations);
   return (
     <>
-      <ul role="list" className="divide-y divide-gray-100 px-5 lg:px-36">
+      <ul
+        role="list"
+        className="divide-y divide-gray-100 px-5 lg:px-36 flex flex-col-reverse"
+      >
         {conversations.map((c) => (
           <li key={c.id}>
             <Link
