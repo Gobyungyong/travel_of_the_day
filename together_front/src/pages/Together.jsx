@@ -111,13 +111,15 @@ function Together() {
                   key={board.id}
                   className="flex px-4 max-w-xl flex-col items-start justify-between lg:border lg:border-s-2 lg:py-4 not:last-child:"
                 >
-                  <div className="flex items-center gap-x-4 text-xs">
+                  <div className="flex items-center gap-x-4 text-xs w-full">
                     <time
                       dateTime={formatMessageTimestamp(board.updated_at).date}
-                      className="text-gray-500"
+                      className="text-gray-500 flex justify-between w-full"
                     >
                       <div>{formatMessageTimestamp(board.updated_at).date}</div>
-                      {formatMessageTimestamp(board.updated_at).hours}
+                      <div>
+                        {formatMessageTimestamp(board.updated_at).hours}
+                      </div>
                     </time>
                   </div>
                   <div className="group relative w-full">
