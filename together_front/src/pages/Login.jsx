@@ -201,7 +201,9 @@ function Login() {
                   </small>
                 )}
                 {loginIsFault && (
-                  <p>'아이디 혹은 비밀번호를 잘못 입력하셨습니다.'</p>
+                  <p className="font-semibold text-red-500">
+                    아이디 혹은 비밀번호가 잘못됐습니다.
+                  </p>
                 )}
               </div>
             </div>
