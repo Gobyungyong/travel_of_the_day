@@ -4,6 +4,7 @@ import { Avatar } from "@chakra-ui/react";
 
 import { AuthContext } from "../contexts/AuthContext";
 import Loading from "../components/uiux/Loading";
+import routes from "../routes";
 
 function MyPage() {
   const [boards, setBoards] = useState();
@@ -61,14 +62,15 @@ function MyPage() {
     <>
       <div className="bg-white ">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          내정보 자리(프사/닉네임/회원정보수정 버튼)
-          <div className="relative mt-5 flex items-center gap-x-4">
+          <div className="relative flex items-center gap-x-4">
             <Avatar src={user?.avatar} size="2xl" />
-            <div className="text-xl leading-6 space-y-3">
+            <div className="text-xl leading-6">
               <p className="font-semibold text-gray-900">{user?.nickname}</p>
-              <button className="flex w-full  justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                회원정보수정
-              </button>
+              <Link to={routes.myinfo}>
+                <button className="mt-3 flex w-full  justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                  회원정보수정
+                </button>
+              </Link>
             </div>
           </div>
           <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 border-t border-gray-200 pt-10 mt-6 sm:mt-16 sm:pt-16 lg:mx-0 lg:max-w-none lg:grid-cols-3 lg:my-5 lg:py-8">

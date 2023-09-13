@@ -9,6 +9,7 @@ const routes = {
   conversations: "/conversations",
   chatting: "/chattings/:conversationName",
   mypage: "/mypage",
+  myinfo: "/myinfo",
 };
 
 export default routes;

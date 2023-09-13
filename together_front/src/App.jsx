@@ -14,6 +14,7 @@ import BoardEditer from "./pages/BoardEditer";
 import Board from "./pages/Board";
 import BoardModifier from "./pages/BoardModifier";
 import MyPage from "./pages/MyPage";
+import MyInfo from "./pages/MyInfo";
 
 function App() {
   return (
@@ -68,6 +69,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <MyPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={routes.myinfo}
+            element={
+              <ProtectedRoute>
+                <MyInfo />
               </ProtectedRoute>
             }
           />
