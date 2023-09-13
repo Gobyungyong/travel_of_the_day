@@ -140,7 +140,7 @@ function Board() {
 
   function createConversationName(username) {
     const namesAlph = [user?.username, username].sort();
-    return `${namesAlph[0]}__${namesAlph[1]}`;
+    return btoa(`${namesAlph[0]}__${namesAlph[1]}`);
   }
 
   function formatMessageTimestamp(timestamp) {

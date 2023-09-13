@@ -9,7 +9,7 @@ import Loading from "../components/uiux/Loading";
 import routes from "../routes";
 
 function Chattings() {
-  const { conversationName } = useParams();
+  const { conversationName: encodedConversationName } = useParams();
   const timeout = useRef();
   const [page, setPage] = useState(2);
   const [hasMoreMessages, setHasMoreMessages] = useState(false);
@@ -19,6 +19,7 @@ function Chattings() {
   const [typing, setTyping] = useState(false);
   const [username, setUsername] = useState();
   const [participants, setParticipants] = useState([]);
+  const [conversationName, setConversationName] = useState();
   const [conversation, setConversation] = useState();
 
   const navigate = useNavigate();
@@ -40,15 +41,18 @@ function Chattings() {
   }
 
   useEffect(() => {
-    const conversationUsers = conversationName.split("__");
-    if (conversationUsers[0] === conversationUsers[1]) {
-      alert("본인과의 대화는 지원하지 않습니다.");
-      navigate(routes.homepage, { replace: true });
+    setConversationName(atob(encodedConversationName));
+    if (conversationName) {
+      const noTimeout = () => clearTimeout(timeout.current);
+      const conversationUsers = conversationName.split("__");
+      if (conversationUsers[0] === conversationUsers[1]) {
+        alert("본인과의 대화는 지원하지 않습니다.");
+        navigate(routes.homepage, { replace: true });
+      }
+      getUserInfo();
+      noTimeout();
     }
-    const noTimeout = () => clearTimeout(timeout.current);
-    getUserInfo();
-    noTimeout();
-  }, []);
+  }, [conversationName]);
 
   useEffect(() => {
     getConversationInfo();
