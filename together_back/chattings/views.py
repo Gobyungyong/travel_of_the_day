@@ -35,9 +35,15 @@ class SpecificConversation(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, conversation_name):
+        usernames = conversation_name.split("__")
+
+        if usernames[0] == usernames[1]:
+            raise ParseError("본인과의 대화는 지원하지 않습니다.")
         try:
             print(conversation_name)
-            conversation = Conversation.objects.get(name=conversation_name)
+            conversation = Conversation.objects.filter(
+                name__contains=usernames[0]
+            ).filter(name__contains=usernames[1])[0]
         except:
             raise NotFound("채팅방이 없습니다.")
 
