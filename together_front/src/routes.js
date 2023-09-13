@@ -10,6 +10,7 @@ const routes = {
   chatting: "/chattings/:conversationName",
   mypage: "/mypage",
   myinfo: "/myinfo",
+  notfound: "/*",
 };
 
 export default routes;

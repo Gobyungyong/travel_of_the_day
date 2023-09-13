@@ -84,6 +84,10 @@ export const AuthContextProvider = ({ children }) => {
         }
       }
 
+      if (error.response.status === 404) {
+        navigate(routes.notfound);
+      }
+
       refresh = false;
 
       return error;

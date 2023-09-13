@@ -15,6 +15,7 @@ import Board from "./pages/Board";
 import BoardModifier from "./pages/BoardModifier";
 import MyPage from "./pages/MyPage";
 import MyInfo from "./pages/MyInfo";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
@@ -48,6 +49,7 @@ function App() {
           />
           <Route path={routes.homepage} element={<Together />} />
           <Route path={routes.boardDetail} element={<Board />} />
+          <Route path={routes.notfound} element={<NotFound />} />
           <Route
             path={routes.chatting}
             element={
