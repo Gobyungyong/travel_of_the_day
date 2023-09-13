@@ -30,7 +30,7 @@ function Navbar() {
         >
           <div className="flex lg:flex-1">
             <Link to={routes.homepage} className="-m-1.5 p-1.5">
-              <span className="self-center text-2xl md:text-xl font-semibold whitespace-nowrap dark:text-white">
+              <span className="self-center text-indigo-600 text-2xl md:text-xl font-semibold whitespace-nowrap dark:text-white">
                 Travel_Together
               </span>
             </Link>
