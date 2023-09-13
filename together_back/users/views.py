@@ -120,15 +120,7 @@ class UserInfo(APIView):
             UserInfoSerializer(updated_user).data, status=status.HTTP_202_ACCEPTED
         )
 
-
-class UserDelete(APIView):
-    def get_object(self, username):
-        try:
-            return User.objects.get(username=username)
-        except User.DoesNotExist:
-            raise NotFound("존재하지 않는 유저입니다.")
-
-    def post(self, request):
+    def delete(self, request):
         user = self.get_object(request.user)
 
         if user != request.user:
