@@ -151,6 +151,9 @@ function Chattings() {
     });
     clearTimeout(timeout.current);
     handleQuitTyping();
+    if (!conversation) {
+      getConversationInfo();
+    }
     setMessage("");
   }
 
@@ -210,7 +213,7 @@ function Chattings() {
         <span>The WebSocket is currently {connectionStatus}</span>
       </div> */}
       {/* online */}
-      {
+      {conversation ? (
         <div className="pb-6 px-3 md:px-5">
           {participants.includes(conversation?.other_user?.username) ? (
             <Avatar src={conversation?.other_user?.avatar}>
@@ -225,7 +228,11 @@ function Chattings() {
             {conversation?.other_user?.nickname}님과의 대화
           </h3>
         </div>
-      }
+      ) : (
+        <div className="font-semibold text-3xl text-center mb-5">
+          지금 바로 대화를 시작해보세요!
+        </div>
+      )}
 
       <hr />
       <div className="flex justify-center">
