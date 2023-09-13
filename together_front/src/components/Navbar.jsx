@@ -269,6 +269,13 @@ function Navbar() {
                     )}
                   </span>
                 </Link>
+                <Link
+                  to={routes.mypage}
+                  className="text-sm font-semibold leading-6 text-gray-900"
+                  onClick={buttonClickHandler}
+                >
+                  마이페이지
+                </Link>
               </div>
               <div className="hidden lg:flex lg:flex-1 lg:justify-end">
                 <button
@@ -359,6 +366,14 @@ function Navbar() {
                             </span>
                           )}
                         </span>
+                      </Link>
+                      <Link
+                        to={routes.mypage}
+                        className="mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                        aria-current="page"
+                        onClick={buttonClickHandler}
+                      >
+                        마이페이지
                       </Link>
                     </>
                   )}

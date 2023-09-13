@@ -8,6 +8,7 @@ const routes = {
   boardDetail: "/board/:boardId",
   conversations: "/conversations",
   chatting: "/chattings/:conversationName",
+  mypage: "/mypage",
 };
 
 export default routes;

@@ -13,6 +13,7 @@ import Conversations from "./pages/Conversations";
 import BoardEditer from "./pages/BoardEditer";
 import Board from "./pages/Board";
 import BoardModifier from "./pages/BoardModifier";
+import MyPage from "./pages/MyPage";
 
 function App() {
   return (
@@ -59,6 +60,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <Conversations />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={routes.mypage}
+            element={
+              <ProtectedRoute>
+                <MyPage />
               </ProtectedRoute>
             }
           />
