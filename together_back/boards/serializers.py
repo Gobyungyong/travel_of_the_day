@@ -15,7 +15,7 @@ class BoardSerializer(ModelSerializer):
         fields = "__all__"
 
     def get_comments_count(self, board):
-        return board.comment_set.all().count()
+        return board.comment_set.count()
 
 
 class BoardInfoSerializer(ModelSerializer):
@@ -36,7 +36,7 @@ class BoardInfoSerializer(ModelSerializer):
         return self.context["request"].user.is_staff
 
     def get_comments_count(self, board):
-        return board.comment_set.all().count()
+        return board.comment_set.count()
 
 
 class RelatedBoardSerializer(ModelSerializer):
