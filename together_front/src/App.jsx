@@ -16,6 +16,7 @@ import BoardModifier from "./pages/BoardModifier";
 import MyPage from "./pages/MyPage";
 import MyInfo from "./pages/MyInfo";
 import NotFound from "./pages/NotFound";
+import Landing from "./pages/Landing";
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path={routes.index} element={<Landing />} />
           <Route
             path={routes.boardModifier}
             element={
