@@ -15,7 +15,7 @@ function Together() {
     if (loggedinUser) {
       getUserInfo();
     }
-  }, []);
+  }, [loggedinUser]);
 
   async function getAllBoards() {
     const response = await authAxios.get("api/v1/boards/");
