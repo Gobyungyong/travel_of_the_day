@@ -75,7 +75,7 @@ function Together() {
             className="flex flex-row-reverse justify-center md:justify-start"
           >
             <div className="flex flex-row-reverse rounded-md shadow-sm  ring-1  ring-gray-300  ">
-              <button className="text-gray-600 mr-1 w-16 focus:ring-1 focus:ring-inset focus:ring-indigo-300">
+              <button className="text-gray-600 mr-1 w-16 rounded-md focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-600">
                 검색
               </button>
               <div className="rounded-md">
@@ -83,7 +83,7 @@ function Together() {
                   type="text"
                   name="keyword"
                   id="keyword"
-                  className="h-full block w-full  border-0 py-1.5 px-4 text-gray-900 sm:text-sm sm:leading-6 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-indigo-300"
+                  className="h-full rounded-md block w-full  border-0 py-1.5 px-4 text-gray-900 sm:text-sm sm:leading-6 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-600"
                   placeholder="검색어를 입력해주세요."
                 />
               </div>
@@ -93,7 +93,7 @@ function Together() {
                 </label>
                 <select
                   name="category"
-                  className="h-full rounded-md border-0 bg-transparent py-0 pl-2 pr-7 text-gray-500 sm:text-sm focus:border-2 focus:border-black"
+                  className="h-full rounded-md border-0 bg-transparent py-0 pl-2 pr-7 text-gray-500 sm:text-sm focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-600"
                 >
                   <option value={"all"}>전체</option>
                   <option value={"boardcomment"}>게시글+댓글</option>
