@@ -2,6 +2,7 @@ from channels.generic.websocket import JsonWebsocketConsumer
 from asgiref.sync import async_to_sync
 from rest_framework_simplejwt.tokens import TokenError, AccessToken
 from urllib.parse import parse_qs
+from django.db.models import Q
 
 from .models import Conversation, Message
 from .serializers import MessageSerializer, UnreadConversationSerializer
@@ -317,7 +318,10 @@ class ConversationNotificationConsumer(JsonWebsocketConsumer):
                 self.notifications_group_name,
                 self.channel_name,
             )
-            conversations = Conversation.objects.filter(name__contains=self.user)
+            conversations = Conversation.objects.filter(
+                Q(name__startswith=f"{self.user}__")
+                or Q(name__endswith=f"__{self.user}")
+            )
 
             active_conversations = [
                 conv for conv in conversations if conv.count_messages() > 0
