@@ -7,7 +7,7 @@ import Loading from "../components/uiux/Loading";
 import routes from "../routes";
 
 function MyPage() {
-  const [boards, setBoards] = useState();
+  const [boards, setBoards] = useState(null);
   const [user, setUser] = useState(null);
 
   const { authAxios, user: loggedinUser } = useContext(AuthContext);
@@ -62,19 +62,29 @@ function MyPage() {
     <>
       <div className="bg-white ">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="relative flex items-center gap-x-4">
-            <Avatar src={user?.avatar} size="2xl" />
-            <div className="text-xl leading-6">
-              <p className="font-semibold text-gray-900">{user?.nickname}</p>
-              <Link to={routes.myinfo}>
-                <button className="mt-3 flex w-full  justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                  회원정보수정
-                </button>
-              </Link>
+          {user ? (
+            <div className="relative flex items-center gap-x-4">
+              <Avatar src={user?.avatar} size="2xl" />
+              <div className="text-xl leading-6">
+                <p className="font-semibold text-gray-900">{user?.nickname}</p>
+                <Link to={routes.myinfo}>
+                  <button className="mt-3 flex w-full  justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                    회원정보수정
+                  </button>
+                </Link>
+              </div>
             </div>
-          </div>
+          ) : (
+            <Loading />
+          )}
           <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 border-t border-gray-200 pt-10 mt-6 sm:mt-16 sm:pt-16 lg:mx-0 lg:max-w-none lg:grid-cols-3 lg:my-5 lg:py-8">
-            {boards ? (
+            {!boards ? (
+              <Loading />
+            ) : boards?.length === 0 ? (
+              <div className="text-center lg:w-full">
+                게시글이 존재하지 않습니다.
+              </div>
+            ) : (
               boards.map((board) => (
                 <article
                   key={board.id}
@@ -130,12 +140,6 @@ function MyPage() {
                   </div>
                 </article>
               ))
-            ) : !(boards?.length() === 0) ? (
-              <div className="text-center lg:w-full">
-                게시글이 존재하지 않습니다.
-              </div>
-            ) : (
-              <Loading />
             )}
           </div>
         </div>

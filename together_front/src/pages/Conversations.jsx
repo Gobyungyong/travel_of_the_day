@@ -7,8 +7,8 @@ import Loading from "../components/uiux/Loading";
 
 function Conversations() {
   const { authAxios, user: loggedinUser } = useContext(AuthContext);
-  const [conversations, setConversations] = useState([]);
-  const [user, setUser] = useState();
+  const [conversations, setConversations] = useState(null);
+  const [user, setUser] = useState(null);
 
   const { readyState, sendJsonMessage } = useWebSocket(
     user ? `ws://127.0.0.1:8000/conversations/` : null,
@@ -90,7 +90,7 @@ function Conversations() {
     };
   }
 
-  if (!conversations && !user) {
+  if (!conversations || !user) {
     return <Loading />;
   }
 

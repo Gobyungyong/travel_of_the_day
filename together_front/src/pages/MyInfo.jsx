@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { AuthContext } from "../contexts/AuthContext";
 import routes from "../routes";
+import Loading from "../components/uiux/Loading";
 
 function MyInfo() {
   const [isNicknameAvailable, setIsNicknameAvailable] = useState(0);
@@ -141,6 +142,10 @@ function MyInfo() {
         logout();
       }
     }
+  }
+
+  if (!user) {
+    return <Loading />;
   }
 
   return (
