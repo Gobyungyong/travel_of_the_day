@@ -109,9 +109,11 @@ class UserInfo(APIView):
         user = self.get_object(request.user)
 
         if user != request.user:
-            raise PermissionDenied("비밀번호 변경 권한이 없습니다.")
+            raise PermissionDenied("회원정보수정 권한이 없습니다.")
 
         user.set_password(request.data["password"])
+        user.nickname = request.data["nickname"]
+        user.avatar = request.data["avatar"]
         updated_user = user.save()
 
         return Response(
