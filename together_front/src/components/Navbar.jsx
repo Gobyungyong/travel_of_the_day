@@ -160,7 +160,7 @@
 // export default Navbar;
 
 import { useContext, useState, Fragment } from "react";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, Routes } from "react-router-dom";
 import { Dialog } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 
@@ -190,7 +190,7 @@ function Navbar() {
           aria-label="Global"
         >
           <div className="flex lg:flex-1">
-            <Link to="/" className="-m-1.5 p-1.5">
+            <Link to={routes.homepage} className="-m-1.5 p-1.5">
               <span className="self-center text-2xl md:text-xl font-semibold whitespace-nowrap dark:text-white">
                 Travel_Together
               </span>
