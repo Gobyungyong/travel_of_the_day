@@ -1,7 +1,15 @@
-import { useContext, useEffect, useState, Fragment } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { CalendarIcon, LinkIcon, PencilIcon } from "@heroicons/react/20/solid";
+import {
+  CalendarIcon,
+  LinkIcon,
+  PencilIcon,
+  UserIcon,
+  ChatBubbleLeftRightIcon,
+  ChevronUpDownIcon,
+  TagIcon,
+} from "@heroicons/react/20/solid";
 
 import { AuthContext } from "../contexts/AuthContext";
 import Loading from "../components/uiux/Loading";
@@ -204,20 +212,7 @@ function Board() {
         <div>
           <div className="mt-1 flex sm:mt-0 flex-wrap justify-end space-x-6 items-center">
             <div className="mt-2 flex items-center text-sm text-gray-500 space-x-1">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-5 h-5"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
-                />
-              </svg>
+              <UserIcon className="w-5 h-5" />
               <span>{board.writer.nickname}</span>
             </div>
             <div className="mt-2 flex items-center text-sm text-gray-500">
@@ -266,22 +261,9 @@ function Board() {
                     board.writer.username
                   )}`}
                 >
-                  <button className="w-28 space-x-2inline-flex items-center rounded-md bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="w-5 h-5 inline"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 01-.825-.242m9.345-8.334a2.126 2.126 0 00-.476-.095 48.64 48.64 0 00-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0011.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155"
-                      />
-                    </svg>
-                    채팅하기
+                  <button className="w-28 space-x-2 inline-flex items-center rounded-md bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                    <ChatBubbleLeftRightIcon className="w-5 h-5" />
+                    <span>채팅하기</span>
                   </button>
                 </Link>
               )}
@@ -339,20 +321,7 @@ function Board() {
                     className="text-xs text-gray-400 flex items-center"
                   >
                     <span>더보기</span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="w-3 h-3"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"
-                      />
-                    </svg>
+                    <ChevronUpDownIcon className="w-3 h-3" />
                   </button>
                 </div>
               </div>
@@ -377,25 +346,7 @@ function Board() {
                 <div className="flex justify-between mx-8 mt-3 p-2 rounded-md border ">
                   <div className="flex flex-col w-[20rem] lg:w-[30rem]">
                     <div className="font-semibold text-lg flex justify-start items-center space-x-2">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="w-4 h-4"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"
-                        />
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M6 6h.008v.008H6V6z"
-                        />
-                      </svg>
+                      <TagIcon className="w-4 h-4" />
                       <span>{recomment.writer.nickname}</span>
                     </div>
                     <div className="pl-2"> {recomment.content}</div>
