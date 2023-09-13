@@ -35,7 +35,6 @@ function Together() {
     const searchResults = await authAxios.get(
       `api/v1/boards/search/?category=${category}&keyword=${keyword}`
     );
-    console.log("이벤트타겟", e.target.category.value);
     await setBoards(searchResults.data);
   }
 
@@ -139,10 +138,7 @@ function Together() {
                   </div>
                   <div className="group relative w-full">
                     <h3 className="mt-3 text-lg font-semibold leading-6 text-gray-900 w-10/12 lg:w-9/12 group-hover:text-gray-600">
-                      <Link to={`/board/${board.id}`}>
-                        {/* <span className="absolute inset-0" /> */}
-                        {board.subject}
-                      </Link>
+                      <Link to={`/board/${board.id}`}>{board.subject}</Link>
                     </h3>
                     <p className="mt-5 px-2 line-clamp-3 text-sm leading-6 text-gray-600">
                       {board.content}

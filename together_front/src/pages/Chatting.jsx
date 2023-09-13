@@ -64,11 +64,8 @@ function Chattings() {
       queryParams: {
         token: user ? user : "",
       },
-      onOpen: (e) => {
-        console.log("Connected!", e);
-      },
+
       onClose: (e) => {
-        console.log("Disconnected!", e);
         if (e.code === 1006) {
           setTimeout(getUserInfo, 1000);
         }
@@ -81,12 +78,10 @@ function Chattings() {
             sendJsonMessage({ type: "read_messages" });
             break;
           case "last_50_messages":
-            console.log("data.has_more", data.has_more);
             setMessageHistory(data.messages);
             setHasMoreMessages(data.has_more);
             break;
           case "typing":
-            console.log(data);
             updateTyping(data);
             break;
           case "user_join":
@@ -137,7 +132,6 @@ function Chattings() {
     const res = await authAxios.get(
       `api/v1/chattings/messages/?conversation=${conversationName}&page=${page}`
     );
-    console.log("res", res);
     if (res?.status === 202) {
       setHasMoreMessages(res.data.next);
       setPage(page + 1);
@@ -213,9 +207,6 @@ function Chattings() {
 
   return (
     <>
-      {/* <div>
-        <span>The WebSocket is currently {connectionStatus}</span>
-      </div> */}
       {/* online */}
       {conversation ? (
         <div className="pb-6 px-3 md:px-5">

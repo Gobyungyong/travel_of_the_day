@@ -16,11 +16,8 @@ function Conversations() {
       queryParams: {
         token: loggedinUser ? loggedinUser : "",
       },
-      onOpen: (e) => {
-        console.log("Connected!", e);
-      },
+
       onClose: (e) => {
-        console.log("Disconnected!", e);
         if (e.code === 1006) {
           getUserInfo();
         }
@@ -30,7 +27,6 @@ function Conversations() {
         switch (data.type) {
           case "conversations":
             setConversations(data.conversations);
-            console.log("converrsations다임마", conversations);
             break;
 
           case "new_messages":
@@ -43,16 +39,6 @@ function Conversations() {
     }
   );
 
-  // async function getConversationList() {
-  //   try {
-  //     const res = await authAxios("api/v1/chattings/conversations/");
-  //     setConversations(res.data);
-  //     console.log("res", res);
-  //   } catch {
-  //     return;
-  //   }
-  // }
-
   async function getUserInfo() {
     const res = await authAxios.get("api/v1/users/myinfo/");
     await setUser(res.data);
@@ -61,10 +47,6 @@ function Conversations() {
   useEffect(() => {
     getUserInfo();
   }, []);
-
-  // useEffect(() => {
-  //   getConversationList();
-  // }, [user]);
 
   function createConversationName(username) {
     const namesAlph = [user?.username, username].sort();
@@ -98,7 +80,6 @@ function Conversations() {
     return <div>채팅방이 아직 존재하지 않습니다..</div>;
   }
 
-  console.log(conversations);
   return (
     <>
       <ul

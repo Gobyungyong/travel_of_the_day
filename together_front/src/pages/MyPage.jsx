@@ -50,7 +50,6 @@ function MyPage() {
   }
 
   function commentsCount(board) {
-    console.log("board", board);
     let count = board.comments_count;
     board.comment_set.forEach((comment) => {
       count += comment.recomments_count;
@@ -58,7 +57,6 @@ function MyPage() {
     return count;
   }
 
-  console.log("boards", boards);
   return (
     <>
       <div className="bg-white ">

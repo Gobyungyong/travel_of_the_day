@@ -73,7 +73,6 @@ class UnreadConversationSerializer(ModelSerializer):
 
     def get_other_user(self, obj):
         usernames = obj.name.split("__")
-        print("시리얼라이져 유저네임스", usernames)
         context = {}
         for username in usernames:
             if username != self.context["user"].username:

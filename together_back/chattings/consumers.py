@@ -26,16 +26,12 @@ class ChattingConsumer(JsonWebsocketConsumer):
             user = User.objects.get(id=user_id)
             self.user = user
         except TokenError as e:
-            print("토큰 에러", e)
             user = None
 
         if user is None:
-            print("유저가 없다.")
             self.close()
         else:
-            print("Connected!")
             self.accept()
-            # 여기부터
             self.conversation_name = self.scope["url_route"]["kwargs"][
                 "conversation_name"
             ]
@@ -65,8 +61,6 @@ class ChattingConsumer(JsonWebsocketConsumer):
                             name=f"{usernames[1]}__{usernames[0]}"
                         )
                     self.conversation_name = self.conversation.name
-
-            # 여기까지
 
             async_to_sync(self.channel_layer.group_add)(
                 self.conversation_name,
@@ -101,8 +95,6 @@ class ChattingConsumer(JsonWebsocketConsumer):
             )
 
     def disconnect(self, code):
-        print("Disconnected! code: ", code)
-
         usernames = self.conversation_name.split("__")
 
         if usernames[0] == usernames[1]:
@@ -130,8 +122,6 @@ class ChattingConsumer(JsonWebsocketConsumer):
         usernames = self.conversation_name.split("__")
 
         if usernames[0] == usernames[1]:
-            print("usernames[0]", usernames[0])
-            print("usernames[1]", usernames[1])
             self.close()
             return
 
@@ -144,7 +134,6 @@ class ChattingConsumer(JsonWebsocketConsumer):
                 content=content["message"],
                 conversation=self.conversation,
             )
-            print(content)
             async_to_sync(self.channel_layer.group_send)(
                 self.conversation_name,
                 {
@@ -209,7 +198,6 @@ class ChattingConsumer(JsonWebsocketConsumer):
         return super().receive_json(content, **kwargs)
 
     def chat_message_echo(self, event):
-        print(event)
         self.send_json(event)
 
     def typing(self, event):
@@ -247,15 +235,12 @@ class NotificationConsumer(JsonWebsocketConsumer):
             user = User.objects.get(id=user_id)
             self.user = user
         except TokenError as e:
-            print("알림 토큰 에러", e)
             user = None
 
         if user is None:
-            print("알림 유저가 없다.")
             self.close()
         else:
             self.accept()
-            print("알림 연결 성공")
             self.notification_group_name = self.user.username + "__notifications"
             async_to_sync(self.channel_layer.group_add)(
                 self.notification_group_name,
@@ -270,7 +255,6 @@ class NotificationConsumer(JsonWebsocketConsumer):
             )
 
     def disconnect(self, code):
-        print("알림 연결 끊김")
         async_to_sync(self.channel_layer.group_discard)(
             self.notification_group_name,
             self.channel_name,
@@ -304,15 +288,12 @@ class ConversationNotificationConsumer(JsonWebsocketConsumer):
             user = User.objects.get(id=user_id)
             self.user = user
         except TokenError as e:
-            print("채팅방 토큰 에러", e)
             user = None
 
         if user is None:
-            print("채팅방 유저가 없다.")
             self.close()
         else:
             self.accept()
-            print("채팅방 연결 성공")
             self.notifications_group_name = self.user.username + "__notifications__"
             async_to_sync(self.channel_layer.group_add)(
                 self.notifications_group_name,
@@ -322,12 +303,10 @@ class ConversationNotificationConsumer(JsonWebsocketConsumer):
                 Q(name__istartswith=f"{self.user.username}__")
                 | Q(name__iendswith=f"__{self.user.username}")
             )
-            print("conversations", conversations)
-            print("self.user.username", self.user.username)
+
             active_conversations = [
                 conv for conv in conversations if conv.count_messages() > 0
             ]
-            print("active_conversations", active_conversations)
 
             self.send_json(
                 {
@@ -339,8 +318,6 @@ class ConversationNotificationConsumer(JsonWebsocketConsumer):
             )
 
     def disconnect(self, code):
-        print("채팅방 연결 끊김")
-
         return super().disconnect(code)
 
     def new_message_notification(self, event):

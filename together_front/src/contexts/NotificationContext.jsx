@@ -19,12 +19,6 @@ export const NotificationContextProvider = ({ children }) => {
       queryParams: {
         token: user ? user : "",
       },
-      onOpen: () => {
-        console.log("Connected to Notifications!");
-      },
-      onClose: () => {
-        console.log("Disconnected from Notifications!");
-      },
       onMessage: (e) => {
         const data = JSON.parse(e.data);
         switch (data.type) {

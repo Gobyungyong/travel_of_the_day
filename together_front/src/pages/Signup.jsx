@@ -82,8 +82,6 @@ function Signup() {
           });
           signup(response.data.access, response.data.refresh);
           navigate(routes.homepage, { replace: true });
-          // localStorage.setItem("access_token", response.data.access_token);
-          // localStorage.setItem("refresh_token", response.data.refresh_token);
         } catch (error) {
           console.error("회원가입 실패:", error);
         }
@@ -110,38 +108,6 @@ function Signup() {
       };
     });
   }
-
-  // async function uploadObjectStorage(e) {
-  //   if (!imageSrc) {
-  //     alert("이미지를 등록해 주세요.");
-  //     return;
-  //   }
-  //   e.preventDefault();
-  //   const endpoint = new AWS.Endpoint("https://kr.object.ncloudstorage.com");
-  //   const region = process.env.REACT_APP_REGION;
-  //   const access_key = process.env.REACT_APP_ACCESS_KEY;
-  //   const secret_key = process.env.REACT_APP_SECRET_ACCESS_KEY;
-  //   const bucket_name = process.env.REACT_APP_BUCKET_NAME;
-
-  //   const S3 = new AWS.S3({
-  //     endpoint: endpoint,
-  //     region: region,
-  //     credentials: {
-  //       accessKeyId: access_key,
-  //       secretAccessKey: secret_key,
-  //     },
-  //   });
-
-  //   await S3.putObject({
-  //     Bucket: bucket_name,
-  //     Key: `profile/${imageFile.name}`,
-  //     ACL: "public-read",
-  //     Body: imageFile,
-  //   })
-  //     .promise()
-  //     .then((res) => console.log(res));
-  //   // https://kr.object.ncloudstorage.com/travel-together/profile/20230522_170441.jpg
-  // }
 
   async function checkIdAvailability() {
     const username = getValues("username");
@@ -179,153 +145,6 @@ function Signup() {
     }
   }
 
-  // return (
-  //   <>
-  //     <form onSubmit={handleSubmit(onSignUpSubmit)}>
-  //       <h1>회원 가입</h1>
-  //       <div className="w-14 h-14 rounded-full bg-slate-500" />
-  //       <label
-  //         htmlFor="picture"
-  //         className="cursor-pointer py-2 px-3 border hover:bg-gray-50 border-gray-300 rounded-md shadow-sm text-sm font-medium focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 text-gray-700"
-  //       >
-  //         Change
-  //         <input id="picture" type="file" className="hidden" accept="image/*" />
-  //       </label>
-  //       <img width={"30%"} src={imageSrc} />
-  //       <input accept="image/*" type="file" onChange={onUpload} />
-  //       <input
-  //         id="username"
-  //         type="text"
-  //         placeholder="아이디"
-  //         aria-invalid={
-  //           isSubmitted ? (errors.id ? "true" : "false") : undefined
-  //         }
-  //         {...register("username", {
-  //           required: "아이디는 필수 입력입니다.",
-  //           minLength: {
-  //             value: 3,
-  //             message: "3자리 이상 입력해주세요.",
-  //           },
-  //         })}
-  //         onBlur={checkIdAvailability}
-  //       />
-  //       {isIdAvailable === 1 && (
-  //         <small className="text-green-500 font-semibold">
-  //           사용 가능한 아이디입니다.
-  //         </small>
-  //       )}
-  //       {!(isIdAvailable === -1) || (
-  //         <small role="alert" className="text-red-500 font-semibold">
-  //           이미 사용 중인 아이디입니다.
-  //         </small>
-  //       )}
-  //       {errors.username && <span>{errors.username.message}</span>}
-
-  //       <input
-  //         id="password"
-  //         type="password"
-  //         placeholder="비밀번호"
-  //         aria-invalid={
-  //           isSubmitted ? (errors.password ? "true" : "false") : undefined
-  //         }
-  //         {...register("password", {
-  //           required: "비밀번호는 필수 입력입니다.",
-  //           minLength: {
-  //             value: 5,
-  //             message: "5자리 이상 비밀번호를 사용하세요.",
-  //           },
-  //         })}
-  //       />
-
-  //       {errors.password && <div role="alert">{errors.password.message}</div>}
-
-  //       <input
-  //         id="passwordConfirm"
-  //         type="password"
-  //         placeholder="비밀번호 확인"
-  //         aria-invalid={
-  //           isSubmitted
-  //             ? errors.passwordConfirm
-  //               ? "true"
-  //               : "false"
-  //             : undefined
-  //         }
-  //         {...register("passwordConfirm", {
-  //           required: "비밀번호 확인은 필수 입력입니다.",
-  //           minLength: {
-  //             value: 5,
-  //             message: "5자리 이상 비밀번호를 사용하세요.",
-  //           },
-  //           validate: {
-  //             check: (val) => {
-  //               if (getValues("password") !== val) {
-  //                 return "비밀번호가 일치하지 않습니다.";
-  //               }
-  //             },
-  //           },
-  //         })}
-  //       />
-
-  //       {errors.passwordConfirm && (
-  //         <div role="alert">{errors.passwordConfirm.message}</div>
-  //       )}
-
-  //       <input
-  //         id="name"
-  //         type="text"
-  //         placeholder="이름"
-  //         aria-invalid={
-  //           isSubmitted ? (errors.name ? "true" : "false") : undefined
-  //         }
-  //         {...register("name", {
-  //           required: "이름은 필수 입력입니다.",
-  //           minLength: {
-  //             value: 2,
-  //             message: "2자리 이상 입력해주세요.",
-  //           },
-  //         })}
-  //       />
-
-  //       {errors.name && <div role="alert">{errors.name.message}</div>}
-
-  //       <input
-  //         id="nickname"
-  //         type="text"
-  //         placeholder="이름"
-  //         aria-invalid={
-  //           isSubmitted ? (errors.nickname ? "true" : "false") : undefined
-  //         }
-  //         {...register("nickname", {
-  //           required: "닉네임은 필수 입력입니다.",
-  //           minLength: {
-  //             value: 2,
-  //             message: "2자리 이상 입력해주세요.",
-  //           },
-  //         })}
-  //       />
-
-  //       {errors.nickname && <div role="alert">{errors.nickname.message}</div>}
-
-  //       <input
-  //         id="email"
-  //         type="text"
-  //         placeholder="test@email.com"
-  //         {...register("email", {
-  //           required: "이메일은 필수 입력입니다.",
-  //           pattern: {
-  //             value:
-  //               /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i,
-  //             message: "이메일 형식에 맞지 않습니다.",
-  //           },
-  //         })}
-  //       />
-
-  //       {errors.email && <div role="alert">{errors.email.message}</div>}
-
-  //       <button>Sign Up</button>
-  //     </form>
-  //   </>
-  // );
   return (
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">

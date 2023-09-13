@@ -32,7 +32,6 @@ function Board() {
     formState: { isSubmitSuccessful },
     reset,
   } = useForm();
-  // const { register: reRegister, handleSubmit: reHandleSubmit } = useForm();
 
   useEffect(() => {
     if (loggedinUser) {
@@ -110,41 +109,6 @@ function Board() {
   if (!board) {
     return <Loading />;
   }
-
-  // if (!user) {
-  //   function onClickHandler() {
-  //     alert("로그인 후 이용 가능한 서비스입니다.");
-  //     navigate(routes.login);
-  //   }
-  //   return (
-  //     <>
-  //       <div>제목:{board.subject}</div>
-  //       <div>작성자:{board.writer.username}</div>
-  //       <div>내용:{board.content}</div>
-  //       <button onClick={onClickHandler}>
-  //         <div>{board.writer.username}</div>
-  //       </button>
-  //       <form onSubmit={handleSubmit(onValid)}>
-  //         <textarea {...register("content")} />
-  //         <button>댓글</button>
-  //       </form>
-  //       {board.comment_set.map((comment) => (
-  //         <div key={comment.id}>
-  //           {comment.writer.username} : {comment.content}
-  //           <form onSubmit={(e) => recommentOnValid(e, comment.id)}>
-  //             <textarea name="content" />
-  //             <button>대댓글</button>
-  //           </form>
-  //           {comment.recomment_set?.map((recomment) => (
-  //             <div key={recomment?.id}>
-  //               {recomment?.writer.username} : {recomment?.content}
-  //             </div>
-  //           ))}
-  //         </div>
-  //       ))}
-  //     </>
-  //   );
-  // }
 
   function createConversationName(username) {
     const namesAlph = [user?.username, username].sort();

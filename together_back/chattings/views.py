@@ -41,7 +41,6 @@ class SpecificConversation(APIView):
             raise ParseError("본인과의 대화는 지원하지 않습니다.")
 
         try:
-            print("view 프린트임", conversation_name)
             try:
                 conversation = Conversation.objects.get(
                     name=f"{usernames[0]}__{usernames[1]}"
