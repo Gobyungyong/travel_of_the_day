@@ -36,7 +36,7 @@ class RelatedCommentSerializer(ModelSerializer):
         )
 
     def get_recomments_count(self, comment):
-        return comment.recomment_set.all().count()
+        return comment.recomment_set.count()
 
     def get_is_writer(self, board):
         return board.writer == self.context["request"].user

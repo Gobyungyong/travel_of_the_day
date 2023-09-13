@@ -7,5 +7,6 @@ urlpatterns = [
     path("", views.AllBoards.as_view()),
     path("new/", views.NewBoard.as_view()),
     path("search/", views.SearchBoard.as_view()),
+    path("my_boards/", views.MyBoards.as_view()),
     path("<int:board_id>/", views.BoardDetail.as_view()),
 ]

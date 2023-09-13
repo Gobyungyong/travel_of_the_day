@@ -35,6 +35,16 @@ class AllBoards(APIView):
         )
 
 
+class MyBoards(APIView):
+    def get(self, request):
+        boards = Board.objects.filter(writer=request.user).order_by("-created_at")
+
+        return Response(
+            BoardSerializer(boards, context={"request": request}, many=True).data,
+            status=status.HTTP_200_OK,
+        )
+
+
 class BoardDetail(APIView):
     def get_board(self, board_id):
         try:

@@ -7,10 +7,15 @@ from comments.serializers import RelatedCommentSerializer
 
 class BoardSerializer(ModelSerializer):
     writer = UsernameSerializer(read_only=True)
+    comment_set = RelatedCommentSerializer(read_only=True, many=True)
+    comments_count = SerializerMethodField()
 
     class Meta:
         model = Board
         fields = "__all__"
+
+    def get_comments_count(self, board):
+        return board.comment_set.all().count()
 
 
 class BoardInfoSerializer(ModelSerializer):
