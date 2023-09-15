@@ -42,7 +42,8 @@ export const AuthContextProvider = ({ children }) => {
     headers: {
       "Content-Type": "application/json",
     },
-    baseURL: "http://localhost:8000", //로컬
+    // baseURL: "http://localhost:8000", //로컬
+    baseURL: "/",
     withCredentials: true,
   });
 
@@ -82,10 +83,6 @@ export const AuthContextProvider = ({ children }) => {
           alert("로그인 후 이용 가능한 서비스입니다.");
           navigate(routes.login);
         }
-      }
-
-      if (error.response.status === 404) {
-        navigate(routes.notfound);
       }
 
       refresh = false;

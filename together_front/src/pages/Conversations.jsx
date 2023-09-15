@@ -11,7 +11,7 @@ function Conversations() {
   const [user, setUser] = useState(null);
 
   const { readyState, sendJsonMessage } = useWebSocket(
-    user ? `ws://127.0.0.1:8000/conversations/` : null,
+    user ? `wss://${window.location.host}/ws/conversations/` : null,
     {
       queryParams: {
         token: loggedinUser ? loggedinUser : "",
@@ -40,7 +40,7 @@ function Conversations() {
   );
 
   async function getUserInfo() {
-    const res = await authAxios.get("api/v1/users/myinfo/");
+    const res = await authAxios.get("/api/v1/users/myinfo/");
     await setUser(res.data);
   }
 

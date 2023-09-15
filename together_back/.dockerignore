@@ -1,0 +1,17 @@
+.git
+.gitignore
+README.md
+dockerfile
+poetry.lock
+pyproject.toml
+.env
+backup
+.venv
+*.log
+*.pot
+*.pyc
+__pycache__/
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media

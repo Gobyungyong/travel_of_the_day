@@ -13,7 +13,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config("DEBUG")
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -84,7 +84,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("localhost", 6379)],
+            "hosts": [("redis", 6379)],
         },
     },
 }
@@ -175,6 +175,8 @@ SIMPLE_JWT = {
 CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
     "http://localhost:3000",
+    "http://118.67.143.24",
+    "https://118.67.143.24",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -182,4 +184,6 @@ CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1:3000",
     "http://localhost:3000",
+    "http://118.67.143.24",
+    "https://118.67.143.24",
 ]

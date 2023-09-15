@@ -19,12 +19,12 @@ function Together() {
   }, [loggedinUser]);
 
   async function getAllBoards() {
-    const response = await authAxios.get("api/v1/boards/");
+    const response = await authAxios.get("/api/v1/boards/");
     setBoards(response.data);
   }
 
   async function getUserInfo() {
-    const res = await authAxios.get("api/v1/users/myinfo/");
+    const res = await authAxios.get("/api/v1/users/myinfo/");
     await setUser(res.data);
   }
 
@@ -33,9 +33,9 @@ function Together() {
     const category = e.target.category.value;
     const keyword = e.target.keyword.value;
     const searchResults = await authAxios.get(
-      `api/v1/boards/search/?category=${category}&keyword=${keyword}`
+      `/api/v1/boards/search/?category=${category}&keyword=${keyword}`
     );
-    await setBoards(searchResults.data);
+    await setBoards(searchResults.data || []);
   }
 
   function formatMessageTimestamp(timestamp) {

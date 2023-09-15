@@ -37,7 +37,7 @@ function Signup() {
       imageSrc ===
       "https://kr.object.ncloudstorage.com/travel-together/profile/basic_profile/basic.png"
     ) {
-      const response = await authAxios.post("api/v1/users/signup/", {
+      const response = await authAxios.post("/api/v1/users/signup/", {
         username: data.username,
         name: data.name,
         password: data.password,
@@ -73,7 +73,7 @@ function Signup() {
       .promise()
       .then(async () => {
         try {
-          const response = await authAxios.post("api/v1/users/signup/", {
+          const response = await authAxios.post("/api/v1/users/signup/", {
             username: data.username,
             name: data.name,
             password: data.password,
@@ -112,7 +112,7 @@ function Signup() {
   async function checkIdAvailability() {
     const username = getValues("username");
     try {
-      const response = await authAxios.post("api/v1/users/check_username/", {
+      const response = await authAxios.post("/api/v1/users/check_username/", {
         username,
       });
 
@@ -130,7 +130,7 @@ function Signup() {
   async function checkNicknameAvailability() {
     const nickname = getValues("nickname");
     try {
-      const response = await authAxios.post("api/v1/users/check_nickname/", {
+      const response = await authAxios.post("/api/v1/users/check_nickname/", {
         nickname,
       });
 

@@ -35,7 +35,7 @@ function MyInfo() {
   }, [loggedinUser]);
 
   async function getUserInfo() {
-    const res = await authAxios.get("api/v1/users/myinfo/");
+    const res = await authAxios.get("/api/v1/users/myinfo/");
     await setUser(res.data);
     await setImageSrc(res.data.avatar);
     setValue("username", res.data.username);
@@ -45,7 +45,7 @@ function MyInfo() {
 
   async function onUpdateUserSubmit(data) {
     if (!imageFile) {
-      const response = await authAxios.put("api/v1/users/myinfo/", {
+      const response = await authAxios.put("/api/v1/users/myinfo/", {
         password: data.password,
         nickname: data.nickname,
         avatar: user.avatar,
@@ -78,7 +78,7 @@ function MyInfo() {
       .promise()
       .then(async () => {
         try {
-          const response = await authAxios.put("api/v1/users/myinfo/", {
+          const response = await authAxios.put("/api/v1/users/myinfo/", {
             password: data.password,
             nickname: data.nickname,
             avatar: `https://kr.object.ncloudstorage.com/travel-together/profile/${data.username}/${data.username}`,
@@ -120,7 +120,7 @@ function MyInfo() {
       return;
     }
     try {
-      const response = await authAxios.post("api/v1/users/check_nickname/", {
+      const response = await authAxios.post("/api/v1/users/check_nickname/", {
         nickname,
       });
 
@@ -137,7 +137,7 @@ function MyInfo() {
 
   async function deleteUser() {
     if (window.confirm("정말 탈퇴하시겠습니까?")) {
-      const res = await authAxios.delete(`api/v1/users/myinfo/`);
+      const res = await authAxios.delete(`/api/v1/users/myinfo/`);
       if (res?.status === 204) {
         logout();
       }

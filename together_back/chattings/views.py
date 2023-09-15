@@ -50,14 +50,10 @@ class SpecificConversation(APIView):
                     name=f"{usernames[1]}__{usernames[0]}"
                 )
         except:
-            return Response(
-                {"message": "채팅방이 없습니다."}, status=status.HTTP_406_NOT_ACCEPTABLE
-            )
+            raise NotFound("채팅방이 없습니다.")
 
         if not conversation.messages.all().exists():
-            return Response(
-                {"message": "채팅방이 없습니다."}, status=status.HTTP_406_NOT_ACCEPTABLE
-            )
+            raise NotFound("채팅방이 없습니다.")
 
         return Response(
             ConversationSerializer(

@@ -27,14 +27,14 @@ function Chattings() {
   const { user, authAxios } = useContext(AuthContext);
 
   async function getUserInfo() {
-    const res = await authAxios.get("api/v1/users/myinfo/");
+    const res = await authAxios.get("/api/v1/users/myinfo/");
     if (res.status === 200) {
       await setUsername(res.data.username);
     }
   }
 
   async function getConversationInfo() {
-    const res = await authAxios.get(`api/v1/chattings/${conversationName}/`);
+    const res = await authAxios.get(`/api/v1/chattings/${conversationName}/`);
     if (res.status === 202) {
       await setConversation(res.data);
     }
@@ -59,7 +59,7 @@ function Chattings() {
   }, [username]);
 
   const { readyState, sendJsonMessage } = useWebSocket(
-    user ? `ws://127.0.0.1:8000/chattings/${conversationName}/` : null,
+    user ? `wss://${window.location.host}/ws/chattings/${conversationName}/` : null,
     {
       queryParams: {
         token: user ? user : "",
@@ -130,7 +130,7 @@ function Chattings() {
 
   async function loadMessages() {
     const res = await authAxios.get(
-      `api/v1/chattings/messages/?conversation=${conversationName}&page=${page}`
+      `/api/v1/chattings/messages/?conversation=${conversationName}&page=${page}`
     );
     if (res?.status === 202) {
       setHasMoreMessages(res.data.next);

@@ -21,12 +21,12 @@ function MyPage() {
   }, [loggedinUser]);
 
   async function getMyBoards() {
-    const response = await authAxios.get("api/v1/boards/my_boards/");
+    const response = await authAxios.get("/api/v1/boards/my_boards/");
     setBoards(response.data);
   }
 
   async function getUserInfo() {
-    const res = await authAxios.get("api/v1/users/myinfo/");
+    const res = await authAxios.get("/api/v1/users/myinfo/");
     await setUser(res.data);
   }
 

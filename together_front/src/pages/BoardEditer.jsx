@@ -17,7 +17,7 @@ function BoardEditer() {
   async function onValid(data) {
     const content = data.content;
     const subject = data.subject;
-    const response = await authAxios.post("api/v1/boards/new/", {
+    const response = await authAxios.post("/api/v1/boards/new/", {
       content,
       subject,
     });

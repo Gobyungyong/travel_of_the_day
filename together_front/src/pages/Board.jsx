@@ -55,7 +55,7 @@ function Board() {
       navigate(routes.login);
     }
     const content = data.content;
-    await authAxios.post("api/v1/comments/new/", {
+    await authAxios.post("/api/v1/comments/new/", {
       content,
       board: boardId,
     });
@@ -69,7 +69,7 @@ function Board() {
       navigate(routes.login);
     }
     const content = event.target.content.value;
-    await authAxios.post("api/v1/recomments/new/", {
+    await authAxios.post("/api/v1/recomments/new/", {
       content,
       comment: comment_id,
     });
@@ -78,12 +78,12 @@ function Board() {
   }
 
   async function getBoardDetail() {
-    const res = await authAxios.get(`api/v1/boards/${boardId}/`);
+    const res = await authAxios.get(`/api/v1/boards/${boardId}/`);
     setBoard(res.data);
   }
 
   async function getUserInfo() {
-    const res = await authAxios.get("api/v1/users/myinfo/");
+    const res = await authAxios.get("/api/v1/users/myinfo/");
     await setUser(res.data);
   }
 
@@ -95,7 +95,7 @@ function Board() {
     if (board.is_writer || user.is_staff) {
       if (window.confirm("게시글을 삭제하시겠습니까?")) {
         try {
-          await authAxios.delete(`api/v1/boards/${boardId}/`);
+          await authAxios.delete(`/api/v1/boards/${boardId}/`);
           navigate("/homepage", { replace: true });
         } catch {
           return;
@@ -146,7 +146,7 @@ function Board() {
   async function deleteComment(commentId) {
     if (window.confirm("댓글을 삭제하시겠습니까?")) {
       const res = await authAxios.delete(
-        `api/v1/comments/delete/${commentId}/`
+        `/api/v1/comments/delete/${commentId}/`
       );
       if (res?.status === 204) {
         getBoardDetail();
@@ -157,7 +157,7 @@ function Board() {
   async function deleteRecomment(recommentId) {
     if (window.confirm("대댓글을 삭제하시겠습니까?")) {
       const res = await authAxios.delete(
-        `api/v1/recomments/delete/${recommentId}/`
+        `/api/v1/recomments/delete/${recommentId}/`
       );
       if (res?.status === 204) {
         getBoardDetail();

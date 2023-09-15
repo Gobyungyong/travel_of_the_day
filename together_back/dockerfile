@@ -1,0 +1,31 @@
+FROM python
+
+WORKDIR /app
+
+COPY requirements.txt /app
+
+RUN pip install -r requirements.txt
+
+COPY . /app
+
+ARG DJANGO_SECRET_KEY="wow"
+ARG DB_NAME="wow"
+ARG DB_USER="wow"
+ARG DB_PASSWORD="wow"
+ARG DB_HOST="wow"
+ARG JWT_SECRET_KEY="wow"
+ARG DEBUG=True
+
+ENV DJANGO_SECRET_KEY $DJANGO_SECRET_KEY
+ENV DB_NAME  $DB_NAME 
+ENV DB_USER $DB_USER
+ENV DB_PASSWORD $DB_PASSWORD
+ENV DB_HOST $DB_HOST
+ENV JWT_SECRET_KEY $JWT_SECRET_KEY
+ARG DEBUG $DEBUG
+
+
+# cloud DB 이미 migrate
+# RUN python manage.py migrate
+
+CMD ["/bin/sh", "/app/command.sh"]

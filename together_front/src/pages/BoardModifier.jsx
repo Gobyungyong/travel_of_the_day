@@ -31,14 +31,14 @@ function BoardModifier() {
   });
 
   async function getBoardDetail() {
-    const res = await authAxios.get(`api/v1/boards/${boardId}/`);
+    const res = await authAxios.get(`/api/v1/boards/${boardId}/`);
     setBoard(res.data);
   }
 
   async function onValid(data) {
     const content = data.content;
     const subject = data.subject;
-    const response = await authAxios.put(`api/v1/boards/${boardId}/`, {
+    const response = await authAxios.put(`/api/v1/boards/${boardId}/`, {
       content,
       subject,
     });

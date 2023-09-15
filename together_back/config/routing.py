@@ -7,7 +7,7 @@ from chattings.consumers import (
 )
 
 websocket_urlpatterns = [
-    path("chattings/<conversation_name>/", ChattingConsumer.as_asgi()),
-    path("notifications/", NotificationConsumer.as_asgi()),
-    path("conversations/", ConversationNotificationConsumer.as_asgi()),
+    path("ws/chattings/<conversation_name>/", ChattingConsumer.as_asgi()),
+    path("ws/notifications/", NotificationConsumer.as_asgi()),
+    path("ws/conversations/", ConversationNotificationConsumer.as_asgi()),
 ]

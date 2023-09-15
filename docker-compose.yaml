@@ -6,3 +6,34 @@ services:
     container_name: redis
     ports:
       - "6379:6379"
+
+  backend:
+    container_name: backend
+    image: gobyungyong/together_back
+    env_file:
+      - ./.env
+    ports:
+      - 8000:8000
+    depends_on:
+      - redis
+
+  frontend:
+    image: gobyungyong/together_front
+    env_file:
+      - ./.env
+    volumes:
+      - build_folder:/app/build
+
+  nginx:
+    container_name: nginx
+    image: gobyungyong/together_nginx
+    ports:
+      - 80:80
+    volumes:
+      - build_folder:/usr/share/nginx/html
+    depends_on:
+      - backend
+      - frontend
+
+volumes:
+  build_folder:
