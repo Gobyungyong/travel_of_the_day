@@ -11,7 +11,6 @@ function BoardModifier() {
 
   const router = useRouter();
   const { boardId } = router.query;
-  console.log("라우터", router.query);
 
   useEffect(() => {
     if (boardId) {

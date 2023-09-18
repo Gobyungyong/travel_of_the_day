@@ -8,8 +8,6 @@ export function ProtectedRoute({ children }) {
   const { user } = useContext(AuthContext);
   const router = useRouter();
 
-  console.log("protectroutyerq", user);
-
   useEffect(() => {
     const access_token = localStorage.getItem("access_token");
     if (!user && !access_token) {
