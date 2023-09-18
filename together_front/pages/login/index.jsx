@@ -10,7 +10,13 @@ function Login() {
   const [loginIsFault, setLoginIsFault] = useState(false);
   const router = useRouter();
 
-  const { login } = useContext(AuthContext);
+  const { login, user } = useContext(AuthContext);
+
+  useEffect(() => {
+    if (user) {
+      router.replace(routes.homepage);
+    }
+  }, [user]);
 
   const {
     register: loginRegister,
@@ -21,7 +27,7 @@ function Login() {
   const onLogInSubmit = async (data) => {
     try {
       await login(data.id, data.password);
-      router.push(routes.homepage, { replace: true });
+      router.replace(routes.homepage);
     } catch (error) {
       console.error("로그인 실패:", error);
       setLoginIsFault(true);

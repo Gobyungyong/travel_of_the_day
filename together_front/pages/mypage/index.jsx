@@ -6,6 +6,7 @@ import { ChatBubbleOvalLeftEllipsisIcon } from "@heroicons/react/24/outline";
 import { AuthContext } from "../../contexts/AuthContext";
 import Loading from "../../components/uiux/Loading";
 import routes from "../../routes";
+import { ProtectedRoute } from "../../utils/ProtectedRoute";
 
 function MyPage() {
   const [boards, setBoards] = useState(null);
@@ -58,7 +59,7 @@ function MyPage() {
   }
 
   return (
-    <>
+    <ProtectedRoute>
       <div className="bg-white ">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           {user ? (
@@ -130,7 +131,7 @@ function MyPage() {
           </div>
         </div>
       </div>
-    </>
+    </ProtectedRoute>
   );
 }
 

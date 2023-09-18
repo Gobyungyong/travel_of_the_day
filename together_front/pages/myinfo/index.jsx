@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { AuthContext } from "../../contexts/AuthContext";
 import routes from "../../routes";
 import Loading from "../../components/uiux/Loading";
+import { ProtectedRoute } from "../../utils/ProtectedRoute";
 
 function MyInfo() {
   const [isNicknameAvailable, setIsNicknameAvailable] = useState(0);
@@ -50,7 +51,7 @@ function MyInfo() {
         nickname: data.nickname,
         avatar: user.avatar,
       });
-      router.push(routes.homepage, { replace: true });
+      router.replace(routes.homepage);
       return;
     }
 
@@ -84,7 +85,7 @@ function MyInfo() {
             avatar: `https://kr.object.ncloudstorage.com/travel-together/profile/${data.username}/${data.username}`,
           });
           if (response.status === 202) {
-            router.push(routes.homepage, { replace: true });
+            router.replace(routes.homepage);
           }
         } catch (error) {
           console.error("회원정보수정 실패:", error);
@@ -145,11 +146,15 @@ function MyInfo() {
   }
 
   if (!user) {
-    return <Loading />;
+    return (
+      <ProtectedRoute>
+        <Loading />
+      </ProtectedRoute>
+    );
   }
 
   return (
-    <>
+    <ProtectedRoute>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
@@ -383,7 +388,7 @@ function MyInfo() {
           </p>
         </div>
       </div>
-    </>
+    </ProtectedRoute>
   );
 }
 

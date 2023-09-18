@@ -21,9 +21,9 @@ function Signup() {
 
   useEffect(() => {
     if (user) {
-      router.push(routes.homepage, { replace: true });
+      router.replace(routes.homepage);
     }
-  }, []);
+  }, [user]);
 
   const {
     register,
@@ -47,7 +47,7 @@ function Signup() {
           "https://kr.object.ncloudstorage.com/travel-together/profile/basic_profile/basic.png",
       });
       signup(response.data.access, response.data.refresh);
-      navigate(routes.homepage, { replace: true });
+      router.replace(routes.homepage);
       return;
     }
     const endpoint = new AWS.Endpoint("https://kr.object.ncloudstorage.com");
@@ -82,7 +82,7 @@ function Signup() {
             avatar: `https://kr.object.ncloudstorage.com/travel-together/profile/${data.username}/${data.username}`,
           });
           signup(response.data.access, response.data.refresh);
-          router.push(routes.homepage, { replace: true });
+          router.replace(routes.homepage);
         } catch (error) {
           console.error("회원가입 실패:", error);
         }
