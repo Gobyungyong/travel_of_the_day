@@ -16,6 +16,7 @@ import { AuthContext } from "../../contexts/AuthContext";
 import Loading from "../../components/uiux/Loading";
 import routes from "../../routes";
 import { cls } from "../../utils/ClassUtil";
+import TextViewer from "../../components/TextViewer";
 
 function Board() {
   const { authAxios, user: loggedinUser } = useContext(AuthContext);
@@ -240,7 +241,7 @@ function Board() {
       </div>
 
       <div className="h-[25rem] lg:h-[35rem] overflow-scroll scrollbar-hide mt-5 px-5 py-5 border-y border-gray-300 border-dotted lg:px-12 text-lg">
-        {board.content}
+        <TextViewer value={board?.content}>{board.content}</TextViewer>
       </div>
 
       <form

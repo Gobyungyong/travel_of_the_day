@@ -74,6 +74,14 @@ function Homepage() {
     return count;
   }
 
+  function removeHtmlTags(str) {
+    if (str && typeof str === "string") {
+      return str.replace(/<[^>]*>/g, "");
+    } else {
+      return "";
+    }
+  }
+
   return (
     <div className="bg-white ">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -138,7 +146,7 @@ function Homepage() {
                     <Link href={`/board/${board.id}`}>{board.subject}</Link>
                   </h3>
                   <p className="mt-5 px-2 line-clamp-3 text-sm leading-6 text-gray-600">
-                    {board.content}
+                    {removeHtmlTags(board.content)}
                   </p>
                   <p className="mt-3 flex space-x-3 absolute right-0 top-0">
                     <ChatBubbleOvalLeftEllipsisIcon className="w-6 h-6" />

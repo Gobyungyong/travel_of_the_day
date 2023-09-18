@@ -1,9 +1,10 @@
 import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../../contexts/AuthContext";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { useRouter } from "next/router";
 
+import { AuthContext } from "../../../contexts/AuthContext";
 import { ProtectedRoute } from "../../../utils/ProtectedRoute";
+import TextEditer from "../../../components/TextEditer";
 
 function BoardModifier() {
   const { authAxios } = useContext(AuthContext);
@@ -30,6 +31,8 @@ function BoardModifier() {
     handleSubmit,
     setValue,
     formState: { errors },
+    control,
+    setError,
   } = useForm({
     defaultValues: { subject: board?.subject, content: board?.content },
   });
@@ -42,11 +45,16 @@ function BoardModifier() {
   async function onValid(data) {
     const content = data.content;
     const subject = data.subject;
+    if (content === "<p><br></p>") {
+      setError("content", { message: "내용을 입력해주세요." });
+      return;
+    }
+
     const response = await authAxios.put(`/api/v1/boards/${boardId}/`, {
       content,
       subject,
     });
-    await navigate(`/board/${response.data.id}`);
+    await router.replace(`/board/${response.data.id}`);
   }
 
   return (
@@ -76,7 +84,25 @@ function BoardModifier() {
         </div>
         <div className="flex flex-col space-y-4">
           <label className="font-semibold text-2xl text-gray-500">내용</label>
-          <textarea
+          <Controller
+            name="content"
+            control={control}
+            defaultValue=""
+            rules={{
+              required: "내용을 입력해주세요.",
+              maxLength: {
+                value: 512,
+                message: "내용은 512자를 넘을 수 없습니다.",
+              },
+            }}
+            render={({ field }) => (
+              <TextEditer
+                value={field.value}
+                onChange={(value) => field.onChange(value)}
+              />
+            )}
+          />
+          {/* <textarea
             {...register("content", {
               required: "내용을 입력해주세요.",
               maxLength: {
@@ -88,7 +114,7 @@ function BoardModifier() {
             rows={10}
             placeholder="내용을 입력하세요."
             className="border border-indigo-400 resize-none p-4 rounded-md focus:outline-none focus:border-indigo-700 focus:border-2"
-          />
+          /> */}
           {errors?.content && (
             <small role="alert" className="pl-2 text-red-500 font-semibold">
               {errors.content.message}
