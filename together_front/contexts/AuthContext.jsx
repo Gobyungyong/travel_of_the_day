@@ -2,7 +2,6 @@ import axios from "axios";
 import React, { createContext, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
-// import AuthHeader from "../utils/AuthHeader";
 import AuthFunc from "../utils/AuthFunc";
 import routes from "../routes";
 
@@ -36,10 +35,9 @@ export const AuthContextProvider = ({ children }) => {
     return data; // === access_token
   }
 
-  function logout() {
-    AuthFunc.logout();
+  async function logout() {
+    await AuthFunc.logout();
     setUser(null);
-    router.push(routes.homepage); // landing
   }
 
   const authAxios = axios.create({
@@ -84,8 +82,9 @@ export const AuthContextProvider = ({ children }) => {
           response.response?.status === 401
         ) {
           localStorage.clear();
-          alert("로그인 후 이용 가능한 서비스입니다.");
-          router.push(routes.login);
+          setUser(null);
+          // alert("로그인 후 이용 가능한 서비스입니다.");
+          // router.push(routes.login);
         }
       }
 

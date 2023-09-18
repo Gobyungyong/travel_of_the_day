@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import { Dialog } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 import { AuthContext } from "../../contexts/AuthContext";
 import { NotificationContext } from "../../contexts/NotificationContext";
@@ -11,6 +12,7 @@ function Navbar() {
   const { user, logout: Logout } = useContext(AuthContext);
   const { unreadMessageCount } = useContext(NotificationContext);
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
 
   function buttonClickHandler() {
     setIsOpen((prev) => !prev);
@@ -19,6 +21,7 @@ function Navbar() {
   function logout() {
     setIsOpen((prev) => !prev);
     Logout();
+    router.replace(routes.homepage);
   }
 
   return (

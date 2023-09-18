@@ -1,16 +1,22 @@
-import { useContext } from "react";
-import { Navigate } from "react-router-dom";
+import { useContext, useEffect } from "react";
+import { useRouter } from "next/router";
 
 import { AuthContext } from "../contexts/AuthContext";
 import routes from "../routes";
 
 export function ProtectedRoute({ children }) {
   const { user } = useContext(AuthContext);
+  const router = useRouter();
 
-  if (!user) {
-    alert("로그인 후 이용 가능한 서비스입니다.");
-    return <Navigate to={routes.login} replace />;
-  }
+  console.log("protectroutyerq", user);
+
+  useEffect(() => {
+    const access_token = localStorage.getItem("access_token");
+    if (!user && !access_token) {
+      alert("로그인 후 이용 가능한 서비스입니다.1");
+      router.replace(routes.login);
+    }
+  }, [user]);
 
   return children;
 }

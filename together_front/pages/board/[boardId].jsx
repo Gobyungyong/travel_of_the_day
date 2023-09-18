@@ -38,11 +38,13 @@ function Board() {
     if (loggedinUser) {
       getUserInfo();
     }
-  }, []);
+  }, [loggedinUser]);
 
   useEffect(() => {
-    getBoardDetail();
-  }, [user]);
+    if (boardId) {
+      getBoardDetail();
+    }
+  }, [user, boardId]);
 
   useEffect(() => {
     if (formState.isSubmitSuccessful) {
@@ -53,7 +55,7 @@ function Board() {
   async function onValid(data) {
     if (!user) {
       alert("로그인 후 이용 가능한 서비스입니다.");
-      router.push(routes.login);
+      router.replace(routes.login);
     }
     const content = data.content;
     await authAxios.post("/api/v1/comments/new/", {
@@ -67,7 +69,7 @@ function Board() {
     event.preventDefault();
     if (!user) {
       alert("로그인 후 이용 가능한 서비스입니다.");
-      router.push(routes.login);
+      router.replace(routes.login);
     }
     const content = event.target.content.value;
     await authAxios.post("/api/v1/recomments/new/", {
@@ -91,13 +93,13 @@ function Board() {
   async function deleteBoard() {
     if (!user) {
       alert("로그인 후 이용 가능한 서비스입니다.");
-      router.push(routes.login);
+      router.replace(routes.login);
     }
     if (board.is_writer || user.is_staff) {
       if (window.confirm("게시글을 삭제하시겠습니까?")) {
         try {
           await authAxios.delete(`/api/v1/boards/${boardId}/`);
-          router.push("/homepage", { replace: true });
+          router.replace("/homepage");
         } catch {
           return;
         }

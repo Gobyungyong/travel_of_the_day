@@ -7,6 +7,7 @@ import { Avatar, AvatarBadge } from "@chakra-ui/react";
 import { AuthContext } from "../../contexts/AuthContext";
 import Loading from "../../components/uiux/Loading";
 import routes from "../../routes";
+import { ProtectedRoute } from "../../utils/ProtectedRoute";
 
 function Chattings() {
   const timeout = useRef();
@@ -49,7 +50,7 @@ function Chattings() {
         const conversationUsers = conversationName.split("__");
         if (conversationUsers[0] === conversationUsers[1]) {
           alert("본인과의 대화는 지원하지 않습니다.");
-          router.push(routes.homepage, { replace: true });
+          router.replace(routes.homepage);
         }
         getUserInfo();
         noTimeout();
@@ -129,7 +130,11 @@ function Chattings() {
   }, [connectionStatus]);
 
   if (!username) {
-    return <Loading />;
+    return (
+      <ProtectedRoute>
+        <Loading />
+      </ProtectedRoute>
+    );
   }
 
   async function loadMessages() {
@@ -210,7 +215,7 @@ function Chattings() {
   }
 
   return (
-    <>
+    <ProtectedRoute>
       {/* online */}
       {conversation ? (
         <div className="pb-6 px-3 md:px-5">
@@ -319,7 +324,7 @@ function Chattings() {
           </p>
         )}
       </form>
-    </>
+    </ProtectedRoute>
   );
 }
 
