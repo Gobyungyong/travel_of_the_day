@@ -11,7 +11,8 @@ function Conversations() {
   const [user, setUser] = useState(null);
 
   const { readyState, sendJsonMessage } = useWebSocket(
-    user ? `wss://${window.location.host}/ws/conversations/` : null,
+    // user ? `wss://${window.location.host}/ws/conversations/` : null,
+    user ? `ws://127.0.0.1:8000/ws/conversations/` : null,
     {
       queryParams: {
         token: loggedinUser ? loggedinUser : "",

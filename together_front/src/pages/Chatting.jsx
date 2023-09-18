@@ -59,7 +59,8 @@ function Chattings() {
   }, [username]);
 
   const { readyState, sendJsonMessage } = useWebSocket(
-    user ? `wss://${window.location.host}/ws/chattings/${conversationName}/` : null,
+    // user ? `wss://${window.location.host}/ws/chattings/${conversationName}/` : null,
+    user ? `ws://127.0.0.1:8000/ws/chattings/${conversationName}/` : null, //로컬
     {
       queryParams: {
         token: user ? user : "",

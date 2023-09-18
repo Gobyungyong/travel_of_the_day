@@ -14,7 +14,8 @@ export const NotificationContextProvider = ({ children }) => {
   const { user } = useContext(AuthContext);
   const [unreadMessageCount, setUnreadMessageCount] = useState(0);
   const { readyState } = useWebSocket(
-    user ? `wss://${window.location.host}/ws/notifications/` : null,
+    // user ? `wss://${window.location.host}/ws/notifications/` : null,
+    user ? `ws://127.0.0.1:8000/ws/notifications/` : null, // 로컬
     {
       queryParams: {
         token: user ? user : "",
