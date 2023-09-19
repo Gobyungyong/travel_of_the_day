@@ -37,12 +37,10 @@ const formats = [
 const QuillEditor = ({ value, onChange }) => {
   return (
     <ReactQuill
-      // className="border-2 h-[500px] border-indigo-400 rounded-md focus:outline-none focus:border-indigo-700 focus:border-2 overflow-hidden"
       value={value}
-      // modules={modules}
       formats={formats}
       theme={null}
-      placeholder="내용을 입력하세요."
+      placeholder={value || "내용이 없습니다."}
       onChange={(content, delta, source, editor) => {
         onChange(content);
       }}
