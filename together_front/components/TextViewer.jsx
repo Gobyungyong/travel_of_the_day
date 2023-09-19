@@ -41,9 +41,9 @@ const QuillEditor = ({ value, onChange }) => {
       formats={formats}
       theme={null}
       placeholder={value || "내용이 없습니다."}
-      onChange={(content, delta, source, editor) => {
-        onChange(content);
-      }}
+      // onChange={(content, delta, source, editor) => {
+      //   onChange(content);
+      // }}
       readOnly={true}
     />
   );
