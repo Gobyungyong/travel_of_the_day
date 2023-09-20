@@ -1,41 +1,65 @@
 import { useContext, useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { ChatBubbleOvalLeftEllipsisIcon } from "@heroicons/react/24/outline";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 
 import { AuthContext } from "../../contexts/AuthContext";
 import Loading from "../../components/uiux/Loading";
+import { cls } from "../../utils/ClassUtil";
 
 function Homepage() {
+  const router = useRouter();
   const [boards, setBoards] = useState(null);
   const [user, setUser] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   const { authAxios, user: loggedinUser } = useContext(AuthContext);
 
+  console.log("router", router.query.category);
+
   useEffect(() => {
-    getAllBoards();
+    getBoards();
+  }, [currentPage, router.query]);
+
+  useEffect(() => {
     if (loggedinUser) {
       getUserInfo();
     }
   }, [loggedinUser]);
-
-  async function getAllBoards() {
-    const response = await authAxios.get("/api/v1/boards/");
-    setBoards(response.data);
-  }
 
   async function getUserInfo() {
     const res = await authAxios.get("/api/v1/users/myinfo/");
     await setUser(res.data);
   }
 
+  async function getBoards() {
+    let response;
+    if (router.query.category && router.query.keyword) {
+      response = await authAxios.get(`/api/v1/boards/search/`, {
+        params: {
+          category: router.query.category,
+          keyword: router.query.keyword,
+          page: currentPage,
+        },
+      });
+    } else {
+      response = await authAxios.get("/api/v1/boards/", {
+        params: { page: currentPage },
+      });
+    }
+    setBoards(response.data.boards);
+    setTotalPages(response.data.total_pages);
+  }
+
   async function SearchBoards(e) {
     e.preventDefault();
     const category = e.target.category.value;
     const keyword = e.target.keyword.value;
-    const searchResults = await authAxios.get(
-      `/api/v1/boards/search/?category=${category}&keyword=${keyword}`
-    );
-    await setBoards(searchResults.data || []);
+    if (!(category && keyword)) return;
+    await setCurrentPage(1);
+    router.push(`?category=${category}&keyword=${keyword}`);
   }
 
   function formatMessageTimestamp(timestamp) {
@@ -62,10 +86,6 @@ function Homepage() {
     return btoa(`${namesAlph[0]}__${namesAlph[1]}`);
   }
 
-  // if (!boards) {
-  //   return <div>게시글이 존재하지 않습니다.</div>;
-  // }
-
   function commentsCount(board) {
     let count = board.comments_count;
     board.comment_set.forEach((comment) => {
@@ -80,6 +100,35 @@ function Homepage() {
     } else {
       return "";
     }
+  }
+
+  const pageNumbers = Array.from(
+    { length: totalPages },
+    (_, index) => index + 1
+  );
+
+  let startIndex;
+
+  if (currentPage > totalPages - 5) {
+    startIndex = Math.max(0, totalPages - 5);
+  } else {
+    startIndex = Math.max(0, currentPage - 1);
+  }
+
+  const endIndex = Math.min(startIndex + 5, pageNumbers.length);
+
+  const visiblePageNumbers = pageNumbers.slice(startIndex, endIndex);
+
+  function handlePageChange(page) {
+    setCurrentPage(page);
+  }
+
+  function previousPage() {
+    setCurrentPage((prev) => prev - 1);
+  }
+
+  function nextPage() {
+    setCurrentPage((prev) => prev + 1);
   }
 
   return (
@@ -175,6 +224,80 @@ function Homepage() {
               </article>
             ))
           )}
+        </div>
+        <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
+          <div className="flex flex-1 justify-between sm:hidden">
+            <button
+              onClick={previousPage}
+              disabled={currentPage === 1}
+              className={cls(
+                "relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50",
+                currentPage === 1 ? "bg-gray-200 hover:bg-gray-200" : null
+              )}
+            >
+              Previous
+            </button>
+            <button
+              onClick={nextPage}
+              disabled={currentPage === totalPages}
+              className={cls(
+                "relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50",
+                currentPage === totalPages
+                  ? "bg-gray-200 hover:bg-gray-200"
+                  : null
+              )}
+            >
+              Next
+            </button>
+          </div>
+          <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-center">
+            <div>
+              <nav
+                className="isolate inline-flex -space-x-px rounded-md shadow-sm"
+                aria-label="Pagination"
+              >
+                <button
+                  onClick={previousPage}
+                  disabled={currentPage === 1}
+                  className={cls(
+                    "relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0",
+                    currentPage === 1 ? "bg-gray-200 hover:bg-gray-200" : null
+                  )}
+                >
+                  <span className="sr-only">Previous</span>
+                  <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
+                </button>
+
+                {visiblePageNumbers.map((v, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handlePageChange(v)}
+                    className={
+                      currentPage === v
+                        ? "relative z-10 inline-flex items-center bg-indigo-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                        : "relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+                    }
+                  >
+                    {v}
+                  </button>
+                ))}
+
+                <button
+                  onClick={nextPage}
+                  disabled={currentPage === totalPages}
+                  className={cls(
+                    "relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0",
+                    currentPage === totalPages
+                      ? "bg-gray-200 hover:bg-gray-200"
+                      : null
+                  )}
+                >
+                  <span className="sr-only">Next</span>
+                  <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
+                </button>
+              </nav>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.exceptions import ParseError, NotFound, PermissionDenied
 from django.db.models import Q
+from django.core.paginator import Paginator
 
 from .models import Board
 from .serializers import BoardSerializer, BoardInfoSerializer
@@ -27,20 +28,38 @@ class NewBoard(APIView):
 
 class AllBoards(APIView):
     def get(self, request):
+        page = int(request.query_params.get("page", 1))
         boards = Board.objects.all().order_by("-created_at")
+        paginator = Paginator(boards, 9)
+        paginated_boards = paginator.get_page(page)
+        total_pages = paginator.num_pages
 
         return Response(
-            BoardInfoSerializer(boards, context={"request": request}, many=True).data,
+            {
+                "boards": BoardInfoSerializer(
+                    paginated_boards, context={"request": request}, many=True
+                ).data,
+                "total_pages": total_pages,
+            },
             status=status.HTTP_200_OK,
         )
 
 
 class MyBoards(APIView):
     def get(self, request):
+        page = int(request.query_params.get("page", 1))
         boards = Board.objects.filter(writer=request.user).order_by("-created_at")
+        paginator = Paginator(boards, 9)
+        paginated_boards = paginator.get_page(page)
+        total_pages = paginator.num_pages
 
         return Response(
-            BoardSerializer(boards, context={"request": request}, many=True).data,
+            {
+                "boards": BoardSerializer(
+                    boards, context={"request": request}, many=True
+                ).data,
+                "total_pages": total_pages,
+            },
             status=status.HTTP_200_OK,
         )
 
@@ -138,9 +157,17 @@ class SearchBoard(APIView):
         if not search_result.exists():
             raise NotFound("해당하는 게시글이 없습니다.")
 
+        page = int(request.query_params.get("page", 1))
+        paginator = Paginator(search_result, 9)
+        paginated_boards = paginator.get_page(page)
+        total_pages = paginator.num_pages
+
         return Response(
-            BoardInfoSerializer(
-                search_result, many=True, context={"request": request}
-            ).data,
+            {
+                "boards": BoardInfoSerializer(
+                    paginated_boards, context={"request": request}, many=True
+                ).data,
+                "total_pages": total_pages,
+            },
             status=status.HTTP_200_OK,
         )
