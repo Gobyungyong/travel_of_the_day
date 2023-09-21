@@ -69,6 +69,14 @@ function MyPage() {
     return count;
   }
 
+  function removeHtmlTags(str) {
+    if (str && typeof str === "string") {
+      return str.replace(/<[^>]*>/g, "");
+    } else {
+      return "";
+    }
+  }
+
   const pageNumbers = Array.from(
     { length: totalPages },
     (_, index) => index + 1
@@ -146,7 +154,7 @@ function MyPage() {
                       <Link href={`/board/${board.id}`}>{board.subject}</Link>
                     </h3>
                     <p className="mt-5 px-2 line-clamp-3 text-sm leading-6 text-gray-600">
-                      {board.content}
+                      {removeHtmlTags(board.content)}
                     </p>
                     <p className="mt-3 flex space-x-3 absolute right-0 top-0">
                       <ChatBubbleOvalLeftEllipsisIcon className="w-6 h-6" />
