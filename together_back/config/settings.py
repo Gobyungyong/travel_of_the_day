@@ -33,8 +33,16 @@ THIRD_PARTY_APPS = [
     "channels",
     "corsheaders",
     "rest_framework",
-    "rest_framework_simplejwt",
+    "dj_rest_auth",
+    "dj_rest_auth.registration",
     "rest_framework_simplejwt.token_blacklist",
+    "rest_framework.authtoken",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.kakao",
+    "allauth.socialaccount.providers.naver",
+    "allauth.socialaccount.providers.google",
 ]
 
 SYSTEM_APPS = [
@@ -44,6 +52,7 @@ SYSTEM_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sites",
 ]
 
 
@@ -58,6 +67,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -197,3 +207,24 @@ CSRF_TRUSTED_ORIGINS = [
     "http://118.67.143.24",
     "https://118.67.143.24",
 ]
+
+# dj-rest-auth
+REST_AUTH = {
+    "REGISTER_SERIALIZER": "users.serializers.CustomRegisterSerializer",
+    "USE_JWT": True,
+    "USER_DETAILS_SERIALIZER": "users.serializers.UserInfoSerializer",
+    "JWT_AUTH_HTTPONLY": False,  # True일 시, 로그인 refresh token 미발행
+}
+
+# django-allauth
+SITE_ID = 1
+
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+# ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_EMAIL_VERIFICATION = "none"
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+KAKAO_REST_API_KEY = config("KAKAO_REST_API_KEY")
+SOCIAL_AUTH_GOOGLE_CLIENT_ID = config("SOCIAL_AUTH_GOOGLE_CLIENT_ID")
+SOCIAL_AUTH_GOOGLE_SECRET = config("SOCIAL_AUTH_GOOGLE_SECRET")
