@@ -219,8 +219,8 @@ REST_AUTH = {
 # django-allauth
 SITE_ID = 1
 
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_EMAIL_REQUIRED = False
+# ACCOUNT_UNIQUE_EMAIL = True
 # ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_EMAIL_VERIFICATION = "none"
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"

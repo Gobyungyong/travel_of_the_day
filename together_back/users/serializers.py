@@ -28,13 +28,14 @@ class CustomRegisterSerializer(RegisterSerializer):
         }
 
     def save(self, request):
-        if User.objects.filter(email=self.validated_data["email"]):
+        email = self.validated_data.get("email", "")
+        if email and User.objects.filter(email=self.validated_data.get("email", "")):
             raise ValidationError({"email": "이미 존재하는 이메일입니다."})
         if User.objects.filter(nickname=self.validated_data["nickname"]):
             raise ValidationError({"nickname": "이미 존재하는 닉네임입니다."})
 
         user = User(
-            email=self.validated_data["email"],
+            email=self.validated_data.get("email", ""),
             username=self.validated_data["username"],
             name=self.validated_data["name"],
             nickname=self.validated_data["nickname"],
