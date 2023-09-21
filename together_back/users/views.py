@@ -52,6 +52,52 @@ class CheckEmail(APIView):
         return Response({"message": "사용가능한 이메일입니다."}, status=status.HTTP_200_OK)
 
 
+class UserInfo(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self, username):
+        try:
+            return User.objects.get(username=username)
+        except User.DoesNotExist:
+            raise NotFound("존재하지 않는 유저입니다.")
+
+    # def get(self, request):
+    #     user = self.get_object(request.user)
+
+    #     if user != request.user:
+    #         raise PermissionDenied("타인 정보 조회는 불가합니다.")
+
+    #     serializer = UserInfoSerializer(user)
+
+    #     return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def put(self, request):
+        user = self.get_object(request.user)
+
+        if user != request.user:
+            raise PermissionDenied("회원정보수정 권한이 없습니다.")
+
+        user.set_password(request.data["password"])
+        user.nickname = request.data["nickname"]
+        user.avatar = request.data["avatar"]
+        updated_user = user.save()
+
+        return Response(
+            UserInfoSerializer(updated_user).data, status=status.HTTP_202_ACCEPTED
+        )
+
+    def delete(self, request):
+        user = self.get_object(request.user)
+
+        if user != request.user:
+            raise PermissionDenied("권한이 없습니다.")
+
+        user.is_active = False
+        user.save()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 # class Signup(APIView):
 #     def post(self, request):
 #         user = SignUpUserSerializer(data=request.data)
@@ -98,52 +144,6 @@ class CheckEmail(APIView):
 
 #         else:
 #             raise ParseError(user.errors)
-
-
-# class UserInfo(APIView):
-#     permission_classes = [IsAuthenticated]
-
-#     def get_object(self, username):
-#         try:
-#             return User.objects.get(username=username)
-#         except User.DoesNotExist:
-#             raise NotFound("존재하지 않는 유저입니다.")
-
-#     def get(self, request):
-#         user = self.get_object(request.user)
-
-#         if user != request.user:
-#             raise PermissionDenied("타인 정보 조회는 불가합니다.")
-
-#         serializer = UserInfoSerializer(user)
-
-#         return Response(serializer.data, status=status.HTTP_200_OK)
-
-#     def put(self, request):
-#         user = self.get_object(request.user)
-
-#         if user != request.user:
-#             raise PermissionDenied("회원정보수정 권한이 없습니다.")
-
-#         user.set_password(request.data["password"])
-#         user.nickname = request.data["nickname"]
-#         user.avatar = request.data["avatar"]
-#         updated_user = user.save()
-
-#         return Response(
-#             UserInfoSerializer(updated_user).data, status=status.HTTP_202_ACCEPTED
-#         )
-
-#     def delete(self, request):
-#         user = self.get_object(request.user)
-
-#         if user != request.user:
-#             raise PermissionDenied("권한이 없습니다.")
-
-#         user.is_active = False
-#         user.save()
-
-#         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 # class Logout(APIView):

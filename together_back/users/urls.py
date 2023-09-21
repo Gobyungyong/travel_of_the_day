@@ -10,7 +10,7 @@ urlpatterns = [
     path("refresh/", TokenRefreshView.as_view()),
     # path("signup/", views.Signup.as_view()), # rest_auth/
     # path("logout/", views.Logout.as_view()), # rest_auth/logout/
-    # path("myinfo/", views.UserInfo.as_view()), # rest_auth/user/
+    path("myinfo/", views.UserInfo.as_view()),  # GET rest_auth/user/
     path("check_username/", views.CheckUsername.as_view()),
     path("check_nickname/", views.CheckNickname.as_view()),
     path("check_email/", views.CheckNickname.as_view()),
