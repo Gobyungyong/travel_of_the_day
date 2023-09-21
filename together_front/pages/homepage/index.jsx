@@ -30,7 +30,8 @@ function Homepage() {
   }, [loggedinUser]);
 
   async function getUserInfo() {
-    const res = await authAxios.get("/api/v1/users/myinfo/");
+    // const res = await authAxios.get("/api/v1/users/myinfo/");
+    const res = await authAxios.get("/api/v1/users/rest_auth/user/");
     await setUser(res.data);
   }
 

@@ -8,7 +8,9 @@ class AuthFunc {
 
   async login(username, password) {
     const response = await axios.post(
-      `http://127.0.0.1:8000/api/v1/users/login/`,
+      `http://127.0.0.1:8000/api/v1/users/rest_auth/login/`,
+      // "/api/v1/users/rest_auth/login/",
+      // `http://127.0.0.1:8000/api/v1/users/login/`,
       // "/api/v1/users/login/",
       {
         username,
@@ -29,7 +31,9 @@ class AuthFunc {
     try {
       const refresh = localStorage.getItem("refresh_token");
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/v1/users/logout/",
+        "http://127.0.0.1:8000/api/v1/users/rest_auth/logout/",
+        // "/api/v1/users/rest_auth/logout/",
+        // "http://127.0.0.1:8000/api/v1/users/logout/",
         // "/api/v1/users/logout/",
         {
           refresh,

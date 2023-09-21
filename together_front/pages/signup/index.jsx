@@ -38,14 +38,18 @@ function Signup() {
       imageSrc ===
       "https://kr.object.ncloudstorage.com/travel-together/profile/basic_profile/basic.png"
     ) {
-      const response = await authAxios.post("/api/v1/users/signup/", {
-        username: data.username,
-        name: data.name,
-        password: data.password,
-        nickname: data.nickname,
-        avatar:
-          "https://kr.object.ncloudstorage.com/travel-together/profile/basic_profile/basic.png",
-      });
+      const response = await authAxios.post(
+        "/api/v1/users/rest_auth_registration/",
+        {
+          username: data.username,
+          name: data.name,
+          password1: data.password1,
+          password2: data.password2,
+          nickname: data.nickname,
+          avatar:
+            "https://kr.object.ncloudstorage.com/travel-together/profile/basic_profile/basic.png",
+        }
+      );
       signup(response.data.access, response.data.refresh);
       router.replace(routes.homepage);
       return;
@@ -74,13 +78,17 @@ function Signup() {
       .promise()
       .then(async () => {
         try {
-          const response = await authAxios.post("/api/v1/users/signup/", {
-            username: data.username,
-            name: data.name,
-            password: data.password,
-            nickname: data.nickname,
-            avatar: `https://kr.object.ncloudstorage.com/travel-together/profile/${data.username}/${data.username}`,
-          });
+          const response = await authAxios.post(
+            "/api/v1/users/rest_auth_registration/",
+            {
+              username: data.username,
+              name: data.name,
+              password1: data.password1,
+              password2: data.password2,
+              nickname: data.nickname,
+              avatar: `https://kr.object.ncloudstorage.com/travel-together/profile/${data.username}/${data.username}`,
+            }
+          );
           signup(response.data.access, response.data.refresh);
           router.replace(routes.homepage);
         } catch (error) {
@@ -322,17 +330,17 @@ function Signup() {
               <div className="mt-2">
                 <input
                   className="focus:outline-none pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  id="password"
+                  id="password1"
                   type="password"
                   placeholder="비밀번호를 입력해주세요."
                   aria-invalid={
                     isSubmitted
-                      ? errors.password
+                      ? errors.password1
                         ? "true"
                         : "false"
                       : undefined
                   }
-                  {...register("password", {
+                  {...register("password1", {
                     required: "비밀번호는 필수 입력입니다.",
                     minLength: {
                       value: 5,
@@ -341,9 +349,9 @@ function Signup() {
                   })}
                 />
 
-                {errors.password && (
+                {errors.password1 && (
                   <small className="text-red-500 font-semibold" role="alert">
-                    {errors.password.message}
+                    {errors.password1.message}
                   </small>
                 )}
               </div>
@@ -352,7 +360,7 @@ function Signup() {
             <div>
               <div className="flex items-center justify-between">
                 <label
-                  htmlFor="passwordConfirm"
+                  htmlFor="password2"
                   className="block text-sm font-bold leading-6 text-gray-900"
                 >
                   비밀번호확인
@@ -361,17 +369,17 @@ function Signup() {
               <div className="mt-2">
                 <input
                   className="focus:outline-none pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  id="passwordConfirm"
+                  id="password2"
                   type="password"
                   placeholder="비밀번호를 재입력해주세요."
                   aria-invalid={
                     isSubmitted
-                      ? errors.passwordConfirm
+                      ? errors.password2
                         ? "true"
                         : "false"
                       : undefined
                   }
-                  {...register("passwordConfirm", {
+                  {...register("password2", {
                     required: "비밀번호 확인은 필수 입력입니다.",
                     minLength: {
                       value: 5,
@@ -379,7 +387,7 @@ function Signup() {
                     },
                     validate: {
                       check: (val) => {
-                        if (getValues("password") !== val) {
+                        if (getValues("password1") !== val) {
                           return "비밀번호가 일치하지 않습니다.";
                         }
                       },
@@ -387,9 +395,9 @@ function Signup() {
                   })}
                 />
 
-                {errors.passwordConfirm && (
+                {errors.password2 && (
                   <small className="text-red-500 font-semibold" role="alert">
-                    {errors.passwordConfirm.message}
+                    {errors.password2.message}
                   </small>
                 )}
               </div>

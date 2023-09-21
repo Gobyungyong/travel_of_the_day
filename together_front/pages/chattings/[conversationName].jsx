@@ -29,7 +29,8 @@ function Chattings() {
   const { user, authAxios } = useContext(AuthContext);
 
   async function getUserInfo() {
-    const res = await authAxios.get("/api/v1/users/myinfo/");
+    // const res = await authAxios.get("/api/v1/users/myinfo/");
+    const res = await authAxios.get("/api/v1/users/rest_auth/user/");
     if (res.status === 200) {
       await setUsername(res.data.username);
     }
