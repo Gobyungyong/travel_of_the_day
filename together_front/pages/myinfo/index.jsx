@@ -8,6 +8,7 @@ import { AuthContext } from "../../contexts/AuthContext";
 import routes from "../../routes";
 import Loading from "../../components/uiux/Loading";
 import { ProtectedRoute } from "../../utils/ProtectedRoute";
+import { onUpload } from "../../utils/Funcs";
 
 function MyInfo() {
   const [isNicknameAvailable, setIsNicknameAvailable] = useState(0);
@@ -96,27 +97,6 @@ function MyInfo() {
       });
   }
 
-  function onUpload(e) {
-    const file = e.target.files[0];
-    const fileExt = file.name.split(".").pop();
-
-    if (!["jpeg", "png", "jpg", "JPG", "PNG", "JPEG"].includes(fileExt)) {
-      alert("jpg, png, jpg 파일만 업로드가 가능합니다.");
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-
-    return new Promise((resolve) => {
-      reader.onload = () => {
-        setImageSrc(reader.result || null); // 파일의 컨텐츠
-        setImageFile(file);
-        resolve();
-      };
-    });
-  }
-
   async function checkNicknameAvailability() {
     const nickname = getValues("nickname");
     if (nickname === user.nickname) {
@@ -187,7 +167,7 @@ function MyInfo() {
                   type="file"
                   className="hidden"
                   accept="image/*"
-                  onChange={onUpload}
+                  onChange={(e) => onUpload(e, setImageSrc)}
                 />
               </label>
             </div>

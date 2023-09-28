@@ -7,6 +7,7 @@ import Image from "next/image";
 
 import { AuthContext } from "../../contexts/AuthContext";
 import routes from "../../routes";
+import { onUpload } from "../../utils/Funcs";
 
 function Signup() {
   const [isIdAvailable, setIsIdAvailable] = useState(0);
@@ -152,26 +153,27 @@ function Signup() {
       });
   }
 
-  function onUpload(e) {
-    const file = e.target.files[0];
-    const fileExt = file.name.split(".").pop();
+  // function onUpload(e) {
+  //   const file = e.target.files[0];
+  //   const fileExt = file.name.split(".").pop();
 
-    if (!["jpeg", "png", "jpg", "JPG", "PNG", "JPEG"].includes(fileExt)) {
-      alert("jpg, png, jpg 파일만 업로드가 가능합니다.");
-      return;
-    }
+  //   // 파일 확장자 유효성 검사, input 태그 accept="image/*" 속성은 강제성 x
+  //   if (!["jpeg", "png", "jpg", "JPG", "PNG", "JPEG"].includes(fileExt)) {
+  //     alert("jpg, png, jpg 파일만 업로드가 가능합니다.");
+  //     return;
+  //   }
 
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
+  //   const reader = new FileReader();
+  //   reader.readAsDataURL(file);
 
-    return new Promise((resolve) => {
-      reader.onload = () => {
-        setImageSrc(reader.result || null); // 파일의 컨텐츠
-        setImageFile(file);
-        resolve();
-      };
-    });
-  }
+  //   return new Promise((resolve) => {
+  //     reader.onload = () => {
+  //       setImageSrc(reader.result || null); // 파일의 컨텐츠
+  //       setImageSrc(file);
+  //       resolve();
+  //     };
+  //   });
+  // }
 
   async function checkIdAvailability() {
     const username = getValues("username");
@@ -237,7 +239,11 @@ function Signup() {
                   type="file"
                   className="hidden"
                   accept="image/*"
-                  onChange={onUpload}
+                  onChange={(e) => {
+                    if (e.target.files[0]?.name) {
+                      onUpload(e, setImageSrc);
+                    }
+                  }}
                 />
               </label>
             </div>
