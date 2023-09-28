@@ -1,0 +1,18 @@
+{% load account %} {% load i18n %} {% block content %} {% autoescape off %}
+{%user_display user as user_display %}
+
+<html lang="ko">
+  <body>
+    <p>
+      귀하의 아이디는
+      <span style="font-weight: bold">{{ user_display }}</span>
+      입니다.
+    </p>
+    <p>아래 계정 인증하기 버튼 클릭하고 TOTD 회원가입을 완료하세요!</p>
+    <button>
+      <a href="{{ activate_url }}" target="_blank"> 계정 인증하기 </a>
+    </button>
+  </body>
+</html>
+
+{% endautoescape %} {% endblock %}

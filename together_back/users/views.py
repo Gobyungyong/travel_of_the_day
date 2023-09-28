@@ -3,11 +3,16 @@ from rest_framework.response import Response
 from rest_framework.exceptions import ParseError, NotFound, PermissionDenied
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from django.http import HttpResponseRedirect
+from allauth.account.models import EmailConfirmation, EmailConfirmationHMAC
+
+# from rest_framework_simplejwt.tokens import RefreshToken
+# from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from .models import User
-from .serializers import SignUpUserSerializer, UserInfoSerializer
+
+# from .serializers import SignUpUserSerializer, UserInfoSerializer
+from .serializers import UserInfoSerializer
 
 
 class CheckUsername(APIView):
@@ -96,6 +101,35 @@ class UserInfo(APIView):
         user.save()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ConfirmEmailView(APIView):
+    def get(self, *args, **kwargs):
+        self.object = confirmation = self.get_object()
+        confirmation.confirm(self.request)
+        # A React Router Route will handle the failure scenario
+        return HttpResponseRedirect("https://travel-together.shop/login/")  # 인증성공
+
+    def get_object(self, queryset=None):
+        key = self.kwargs["key"]
+        email_confirmation = EmailConfirmationHMAC.from_key(key)
+        print(email_confirmation)
+        if not email_confirmation:
+            if queryset is None:
+                queryset = self.get_queryset()
+            try:
+                email_confirmation = queryset.get(key=key.lower())
+            except EmailConfirmation.DoesNotExist:
+                # A React Router Route will handle the failure scenario
+                return HttpResponseRedirect(
+                    "https://travel-together.shop/login/"
+                )  # 인증실패
+        return email_confirmation
+
+    def get_queryset(self):
+        qs = EmailConfirmation.objects.all_valid()
+        qs = qs.select_related("email_address__user")
+        return qs
 
 
 # class Signup(APIView):
