@@ -167,7 +167,11 @@ function MyInfo() {
                   type="file"
                   className="hidden"
                   accept="image/*"
-                  onChange={(e) => onUpload(e, setImageSrc)}
+                  onChange={(e) => {
+                    if (e.target.files[0]?.name) {
+                      onUpload(e, setImageSrc);
+                    }
+                  }}
                 />
               </label>
             </div>
