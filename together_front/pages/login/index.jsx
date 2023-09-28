@@ -68,11 +68,7 @@ function Login() {
                       : undefined
                   }
                   {...loginRegister("id", {
-                    required: "아이디는 필수 입력입니다.",
-                    minLength: {
-                      value: 3,
-                      message: "3자리 이상 입력해주세요.",
-                    },
+                    required: "아이디를 입력해주세요.",
                   })}
                 />
                 {loginErrors.id && (
@@ -105,11 +101,7 @@ function Login() {
                       : undefined
                   }
                   {...loginRegister("password", {
-                    required: "비밀번호는 필수 입력입니다.",
-                    minLength: {
-                      value: 5,
-                      message: "5자리 이상 비밀번호를 사용하세요.",
-                    },
+                    required: "비밀번호를 입력해 주세요.",
                   })}
                 />
                 {loginErrors.password && (

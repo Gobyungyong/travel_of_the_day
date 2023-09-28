@@ -44,6 +44,7 @@ function MyInfo() {
     setValue("username", res.data.username);
     setValue("name", res.data.name);
     setValue("nickname", res.data.nickname);
+    setValue("email", res.data.email);
   }
 
   async function onUpdateUserSubmit(data) {
@@ -193,7 +194,7 @@ function MyInfo() {
 
             <div>
               <label
-                htmlFor="email"
+                htmlFor="username"
                 className="block text-sm font-bold leading-6 text-gray-900"
               >
                 아이디
@@ -203,10 +204,25 @@ function MyInfo() {
                   className="bg-gray-300 px-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 "
                   id="username"
                   type="text"
-                  aria-invalid={
-                    isSubmitted ? (errors.id ? "true" : "false") : undefined
-                  }
                   {...register("username")}
+                  disabled={true}
+                />
+              </div>
+            </div>
+
+            <div>
+              <label
+                htmlFor="email"
+                className="block text-sm font-bold leading-6 text-gray-900"
+              >
+                이메일
+              </label>
+              <div className="mt-2">
+                <input
+                  className="bg-gray-300 px-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 "
+                  id="email"
+                  type="text"
+                  {...register("email")}
                   disabled={true}
                 />
               </div>
@@ -230,12 +246,6 @@ function MyInfo() {
                   disabled={true}
                   {...register("name")}
                 />
-
-                {errors.name && (
-                  <small className="text-red-500 font-semibold" role="alert">
-                    {errors.name.message}
-                  </small>
-                )}
               </div>
             </div>
 
@@ -266,6 +276,15 @@ function MyInfo() {
                     minLength: {
                       value: 2,
                       message: "2자리 이상 입력해주세요.",
+                    },
+                    maxLength: {
+                      value: 10,
+                      message: "11자리 이하로 입력해주세요.",
+                    },
+                    pattern: {
+                      value: /^[A-za-z0-9가-힣]{2,10}$/,
+                      message:
+                        "영문 대소문자, 한글, 숫자 조합의 닉네임만 사용 가능합니다.",
                     },
                   })}
                   onBlur={checkNicknameAvailability}

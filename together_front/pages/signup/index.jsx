@@ -31,6 +31,7 @@ function Signup() {
     handleSubmit,
     formState: { isSubmitted, errors },
     getValues,
+    setError,
     clearErrors,
   } = useForm();
 
@@ -39,21 +40,49 @@ function Signup() {
       imageSrc ===
       "https://kr.object.ncloudstorage.com/travel-together/profile/basic_profile/basic.png"
     ) {
-      const response = await authAxios.post(
-        "/api/v1/users/rest_auth_registration/",
-        {
-          username: data.username,
-          name: data.name,
-          password1: data.password1,
-          password2: data.password2,
-          nickname: data.nickname,
-          avatar:
-            "https://kr.object.ncloudstorage.com/travel-together/profile/basic_profile/basic.png",
+      try {
+        const response = await authAxios.post(
+          "/api/v1/users/rest_auth_registration/",
+          {
+            username: data.username,
+            email: data.email,
+            name: data.name,
+            password1: data.password1,
+            password2: data.password2,
+            nickname: data.nickname,
+            avatar:
+              "https://kr.object.ncloudstorage.com/travel-together/profile/basic_profile/basic.png",
+          }
+        );
+        if (response.status === 201) {
+          // signup(response.data.access, response.data.refresh);
+          alert("입력하신 이메일로 인증 메일이 발송되었습니다.");
+          router.replace(routes.login);
+          return;
+        } else {
+          for (const key in response.response?.data) {
+            for (const fieldName in data) {
+              if (key === fieldName) {
+                console.log(
+                  `${fieldName}type`,
+                  typeof response.response?.data[key]
+                );
+                setError(fieldName, {
+                  type: "server",
+                  message:
+                    typeof response.response?.data[key] === "object"
+                      ? response.response?.data[key][0]
+                      : response.response?.data[key],
+                });
+              }
+            }
+          }
+          return;
         }
-      );
-      signup(response.data.access, response.data.refresh);
-      router.replace(routes.homepage);
-      return;
+      } catch (error) {
+        console.error("회원가입 실패:", error);
+        return;
+      }
     }
     const endpoint = new AWS.Endpoint("https://kr.object.ncloudstorage.com");
     const region = process.env.REACT_APP_REGION;
@@ -83,6 +112,7 @@ function Signup() {
             "/api/v1/users/rest_auth_registration/",
             {
               username: data.username,
+              email: data.email,
               name: data.name,
               password1: data.password1,
               password2: data.password2,
@@ -90,8 +120,32 @@ function Signup() {
               avatar: `https://kr.object.ncloudstorage.com/travel-together/profile/${data.username}/${data.username}`,
             }
           );
-          signup(response.data.access, response.data.refresh);
-          router.replace(routes.homepage);
+          if (response.status === 201) {
+            alert("입력하신 이메일로 인증 메일이 발송되었습니다.");
+            router.replace(routes.login);
+            return;
+          } else {
+            console.log("else문", response.response?.data);
+            console.log("데이터", data);
+            for (const key in response.response?.data) {
+              for (const fieldName in data) {
+                if (key === fieldName) {
+                  console.log(
+                    `${fieldName}type`,
+                    typeof response.response?.data[key]
+                  );
+                  setError(fieldName, {
+                    type: "server",
+                    message:
+                      typeof response.response?.data[key] === "object"
+                        ? response.response?.data[key][0]
+                        : response.response?.data[key],
+                  });
+                }
+              }
+            }
+            return;
+          }
         } catch (error) {
           console.error("회원가입 실패:", error);
         }
@@ -210,6 +264,11 @@ function Signup() {
                       value: 3,
                       message: "3자리 이상 입력해주세요.",
                     },
+                    pattern: {
+                      value: /^[A-za-z0-9]{3,}$/,
+                      message:
+                        "영문 대소문자와 숫자 조합의 아이디만 사용 가능합니다.", // 에러 메세지
+                    },
                   })}
                   onBlur={checkIdAvailability}
                 />
@@ -231,6 +290,42 @@ function Signup() {
               </div>
             </div>
 
+            <div>
+              <div className="flex items-center justify-between">
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-bold leading-6 text-gray-900"
+                >
+                  이메일
+                </label>
+              </div>
+              <div className="mt-2">
+                <input
+                  id="email"
+                  name="email"
+                  className="focus:outline-none pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  type="text"
+                  placeholder="이메일을 입력해주세요."
+                  aria-invalid={
+                    isSubmitted ? (errors.email ? "true" : "false") : undefined
+                  }
+                  {...register("email", {
+                    required: "이메일은 필수 입력 항목입니다.",
+                    pattern: {
+                      value:
+                        /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i,
+                      message: "이메일 형식에 맞지 않습니다.",
+                    },
+                  })}
+                />
+
+                {errors.email && (
+                  <small className="text-red-500 font-semibold" role="alert">
+                    {errors.email.message}
+                  </small>
+                )}
+              </div>
+            </div>
             <div>
               <div className="flex items-center justify-between">
                 <label
@@ -259,6 +354,10 @@ function Signup() {
                     minLength: {
                       value: 2,
                       message: "2자리 이상 입력해주세요.",
+                    },
+                    pattern: {
+                      value: /^[가-힣]{2,}$/,
+                      message: "이름은 한글로 입력해주세요.",
                     },
                   })}
                 />
@@ -298,6 +397,15 @@ function Signup() {
                     minLength: {
                       value: 2,
                       message: "2자리 이상 입력해주세요.",
+                    },
+                    maxLength: {
+                      value: 10,
+                      message: "11자리 이하로 입력해주세요.",
+                    },
+                    pattern: {
+                      value: /^[A-za-z0-9가-힣]{2,10}$/,
+                      message:
+                        "영문 대소문자, 한글, 숫자 조합의 닉네임만 사용 가능합니다.",
                     },
                   })}
                   onBlur={checkNicknameAvailability}
@@ -345,8 +453,8 @@ function Signup() {
                   {...register("password1", {
                     required: "비밀번호는 필수 입력입니다.",
                     minLength: {
-                      value: 5,
-                      message: "5자리 이상 비밀번호를 사용하세요.",
+                      value: 8,
+                      message: "8자리 이상 비밀번호를 사용하세요.",
                     },
                   })}
                 />
@@ -384,8 +492,8 @@ function Signup() {
                   {...register("password2", {
                     required: "비밀번호 확인은 필수 입력입니다.",
                     minLength: {
-                      value: 5,
-                      message: "5자리 이상 비밀번호를 사용하세요.",
+                      value: 8,
+                      message: "8자리 이상 비밀번호를 사용하세요.",
                     },
                     validate: {
                       check: (val) => {
