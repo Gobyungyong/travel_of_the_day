@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import AWS from "aws-sdk";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import Image from "next/image";
 
 import { AuthContext } from "../../contexts/AuthContext";
 import routes from "../../routes";
@@ -166,8 +167,9 @@ function Signup() {
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form className="space-y-6" onSubmit={handleSubmit(onSignUpSubmit)}>
             <div className="flex justify-center items-center w-full space-x-2">
-              <img
-                width={"30%"}
+              <Image
+                width={56}
+                height={56}
                 src={imageSrc}
                 className="w-14 h-14 rounded-full bg-slate-500"
               />

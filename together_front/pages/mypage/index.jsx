@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Avatar } from "@chakra-ui/react";
 import { ChatBubbleOvalLeftEllipsisIcon } from "@heroicons/react/24/outline";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
+import Image from "next/image";
 
 import { AuthContext } from "../../contexts/AuthContext";
 import Loading from "../../components/uiux/Loading";
@@ -162,7 +163,9 @@ function MyPage() {
                     </p>
                   </div>
                   <div className="relative mt-5 flex items-center gap-x-4">
-                    <img
+                    <Image
+                      width={40}
+                      height={40}
                       src={board.writer.avatar}
                       alt=""
                       className="h-10 w-10 rounded-full bg-gray-50"

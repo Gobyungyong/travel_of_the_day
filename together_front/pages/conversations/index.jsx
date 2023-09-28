@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import Link from "next/link";
 import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";
+import Image from "next/image";
 
 import { AuthContext } from "../../contexts/AuthContext";
 import Loading from "../../components/uiux/Loading";
@@ -107,7 +108,9 @@ function Conversations() {
               key={c.other_user?.username}
             >
               <div className="flex min-w-0 gap-x-4">
-                <img
+                <Image
+                  width={48}
+                  height={48}
                   className="h-12 w-12 flex-none rounded-full bg-gray-50"
                   src={c.other_user.avatar}
                 />

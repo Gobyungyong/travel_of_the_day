@@ -2,6 +2,7 @@ import { useState, useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import AWS from "aws-sdk";
 import { useRouter } from "next/router";
+import Image from "next/image";
 
 import { AuthContext } from "../../contexts/AuthContext";
 import routes from "../../routes";
@@ -169,8 +170,9 @@ function MyInfo() {
             onSubmit={handleSubmit(onUpdateUserSubmit)}
           >
             <div className="flex justify-center items-center w-full space-x-2">
-              <img
-                width={"30%"}
+              <Image
+                width={56}
+                height={56}
                 src={imageSrc}
                 className="w-14 h-14 rounded-full bg-slate-500"
               />

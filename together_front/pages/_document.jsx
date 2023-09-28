@@ -5,7 +5,7 @@ class CustomDocument extends Document {
     return (
       <Html lang="ko">
         <Head>
-          <meta charset="utf-8" />
+          <meta charSet="utf-8" />
         </Head>
         <body>
           <Main />
