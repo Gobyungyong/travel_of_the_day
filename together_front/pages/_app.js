@@ -14,7 +14,7 @@ function MyApp({ Component, pageProps }) {
             name="viewport"
             content="width=device-width, initial-scale=1.0"
           />
-          <title>Travel Together</title>
+          <title>Travel Of The Day</title>
         </Head>
         <Layout>
           <Component {...pageProps} />
