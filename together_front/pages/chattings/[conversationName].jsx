@@ -8,6 +8,7 @@ import { AuthContext } from "../../contexts/AuthContext";
 import Loading from "../../components/uiux/Loading";
 import routes from "../../routes";
 import { ProtectedRoute } from "../../utils/ProtectedRoute";
+import { formatTimestamp } from "../../utils/Funcs";
 
 function Chattings() {
   const timeout = useRef();
@@ -165,24 +166,6 @@ function Chattings() {
     setMessage("");
   }
 
-  function formatMessageTimestamp(timestamp) {
-    if (!timestamp) return;
-
-    const date = new Date(timestamp);
-
-    const formattedDate = {
-      year: date.getFullYear(),
-      month: String(date.getMonth()).padStart(2, "0"),
-      day: String(date.getDay()).padStart(2, "0"),
-      hour: String(date.getHours()).padStart(2, "0"),
-      minute: String(date.getMinutes()).padStart(2, "0"),
-    };
-
-    return {
-      date: `${formattedDate.year}-${formattedDate.month}-${formattedDate.day}`,
-      hours: `${formattedDate.hour}:${formattedDate.minute}`,
-    };
-  }
   // 사용자 입력중 여부 체크
 
   // 타이핑 안하는 중으로 상태 변경 후 ws에 typing false 송신
@@ -263,11 +246,9 @@ function Chattings() {
                         {message?.content}
                       </div>
                       <div className="text-xs text-gray-500 my-auto mx-1 mb-2">
-                        <p>
-                          {formatMessageTimestamp(message?.timestamp)?.date}
-                        </p>
+                        <p>{formatTimestamp(message?.timestamp)?.date}</p>
                         <p className="text-right">
-                          {formatMessageTimestamp(message?.timestamp)?.hours}
+                          {formatTimestamp(message?.timestamp)?.hours}
                         </p>
                       </div>
                     </div>
@@ -282,12 +263,8 @@ function Chattings() {
                         {message?.content}
                       </div>
                       <div className="text-xs text-gray-500 my-auto mx-1 mb-2">
-                        <p>
-                          {formatMessageTimestamp(message?.timestamp)?.date}
-                        </p>
-                        <p>
-                          {formatMessageTimestamp(message?.timestamp)?.hours}
-                        </p>
+                        <p>{formatTimestamp(message?.timestamp)?.date}</p>
+                        <p>{formatTimestamp(message?.timestamp)?.hours}</p>
                       </div>
                     </div>
                   </li>

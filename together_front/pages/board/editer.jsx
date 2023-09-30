@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { AuthContext } from "../../contexts/AuthContext";
 import { ProtectedRoute } from "../../utils/ProtectedRoute";
 import TextEditer from "../../components/TextEditer";
+import { onNewBoardValid } from "../../utils/Funcs";
 
 function BoardEditer() {
   const { authAxios } = useContext(AuthContext);
@@ -19,27 +20,12 @@ function BoardEditer() {
     setError,
   } = useForm();
 
-  async function onValid(data) {
-    const content = data.content;
-    const subject = data.subject;
-    if (content === "<p><br></p>") {
-      setError("content", { message: "내용을 입력해주세요." });
-      return;
-    }
-
-    const response = await authAxios.post("/api/v1/boards/new/", {
-      content,
-      subject,
-    });
-    await router.push(`/board/${response.data.id}`, undefined, {
-      replace: true,
-    });
-  }
-
   return (
     <ProtectedRoute>
       <form
-        onSubmit={handleSubmit(onValid)}
+        onSubmit={handleSubmit((data) =>
+          onNewBoardValid(data, authAxios, router, setError)
+        )}
         className="flex flex-col space-y-4 px-4 lg:px-48"
       >
         <div className="flex flex-col space-y-4">

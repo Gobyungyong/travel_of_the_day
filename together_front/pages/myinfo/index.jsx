@@ -8,7 +8,7 @@ import { AuthContext } from "../../contexts/AuthContext";
 import routes from "../../routes";
 import Loading from "../../components/uiux/Loading";
 import { ProtectedRoute } from "../../utils/ProtectedRoute";
-import { onUpload } from "../../utils/Funcs";
+import { onUpload, checkNicknameAvailability } from "../../utils/Funcs";
 
 function MyInfo() {
   const [isNicknameAvailable, setIsNicknameAvailable] = useState(0);
@@ -95,28 +95,6 @@ function MyInfo() {
           console.error("회원정보수정 실패:", error);
         }
       });
-  }
-
-  async function checkNicknameAvailability() {
-    const nickname = getValues("nickname");
-    if (nickname === user.nickname) {
-      setIsNicknameAvailable(2);
-      return;
-    }
-    try {
-      const response = await authAxios.post("/api/v1/users/check_nickname/", {
-        nickname,
-      });
-
-      if (response.status === 200) {
-        setIsNicknameAvailable(2);
-        clearErrors("nickname");
-      } else {
-        setIsNicknameAvailable(-2);
-      }
-    } catch (error) {
-      console.error("중복확인 실패:", error);
-    }
   }
 
   async function deleteUser() {
@@ -271,7 +249,14 @@ function MyInfo() {
                         "영문 대소문자, 한글, 숫자 조합의 닉네임만 사용 가능합니다.",
                     },
                   })}
-                  onBlur={checkNicknameAvailability}
+                  onBlur={() =>
+                    checkNicknameAvailability(
+                      getValues,
+                      authAxios,
+                      setIsNicknameAvailable,
+                      clearErrors
+                    )
+                  }
                 />
                 {isNicknameAvailable === 2 && (
                   <small className="text-green-500 font-semibold">

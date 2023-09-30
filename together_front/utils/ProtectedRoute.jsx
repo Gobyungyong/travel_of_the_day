@@ -11,7 +11,7 @@ export function ProtectedRoute({ children }) {
   useEffect(() => {
     const access_token = localStorage.getItem("access_token");
     if (!user && !access_token) {
-      alert("로그인 후 이용 가능한 서비스입니다.1");
+      alert("로그인 후 이용 가능한 서비스입니다.");
       router.replace(routes.login);
     }
   }, [user]);

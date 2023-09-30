@@ -19,8 +19,8 @@ function Login() {
   }, [user]);
 
   const {
-    register: loginRegister,
-    handleSubmit: handleLoginSubmit,
+    register,
+    handleSubmit,
     formState: { isSubmitted: isLoginSubmitted, errors: loginErrors },
   } = useForm();
 
@@ -44,10 +44,7 @@ function Login() {
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form
-            className="space-y-6"
-            onSubmit={handleLoginSubmit(onLogInSubmit)}
-          >
+          <form className="space-y-6" onSubmit={handleSubmit(onLogInSubmit)}>
             <div>
               <label
                 htmlFor="username"
@@ -67,7 +64,7 @@ function Login() {
                         : "false"
                       : undefined
                   }
-                  {...loginRegister("id", {
+                  {...register("id", {
                     required: "아이디를 입력해주세요.",
                   })}
                 />
@@ -100,7 +97,7 @@ function Login() {
                         : "false"
                       : undefined
                   }
-                  {...loginRegister("password", {
+                  {...register("password", {
                     required: "비밀번호를 입력해 주세요.",
                   })}
                 />

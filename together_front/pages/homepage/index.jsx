@@ -8,6 +8,12 @@ import Image from "next/image";
 import { AuthContext } from "../../contexts/AuthContext";
 import Loading from "../../components/uiux/Loading";
 import { cls } from "../../utils/ClassUtil";
+import {
+  formatTimestamp,
+  commentsCount,
+  removeHtmlTags,
+  createConversationName,
+} from "../../utils/Funcs";
 
 function Homepage() {
   const router = useRouter();
@@ -60,46 +66,6 @@ function Homepage() {
     if (!(category && keyword)) return;
     await setCurrentPage(1);
     router.push(`?category=${category}&keyword=${keyword}`);
-  }
-
-  function formatMessageTimestamp(timestamp) {
-    if (!timestamp) return;
-
-    const date = new Date(timestamp);
-
-    const formattedDate = {
-      year: date.getFullYear(),
-      month: String(date.getMonth()).padStart(2, "0"),
-      day: String(date.getDay()).padStart(2, "0"),
-      hour: String(date.getHours()).padStart(2, "0"),
-      minute: String(date.getMinutes()).padStart(2, "0"),
-    };
-
-    return {
-      date: `${formattedDate.year}-${formattedDate.month}-${formattedDate.day}`,
-      hours: `${formattedDate.hour}:${formattedDate.minute}`,
-    };
-  }
-
-  function createConversationName(username) {
-    const namesAlph = [user?.username, username].sort();
-    return btoa(`${namesAlph[0]}__${namesAlph[1]}`);
-  }
-
-  function commentsCount(board) {
-    let count = board.comments_count;
-    board.comment_set.forEach((comment) => {
-      count += comment.recomments_count;
-    });
-    return count;
-  }
-
-  function removeHtmlTags(str) {
-    if (str && typeof str === "string") {
-      return str.replace(/<[^>]*>/g, "");
-    } else {
-      return "";
-    }
   }
 
   const pageNumbers = Array.from(
@@ -183,11 +149,11 @@ function Homepage() {
               >
                 <div className="flex items-center gap-x-4 text-xs w-full">
                   <time
-                    dateTime={formatMessageTimestamp(board.updated_at).date}
+                    dateTime={formatTimestamp(board.updated_at).date}
                     className="text-gray-500 flex justify-between w-full"
                   >
-                    <div>{formatMessageTimestamp(board.updated_at).date}</div>
-                    <div>{formatMessageTimestamp(board.updated_at).hours}</div>
+                    <div>{formatTimestamp(board.updated_at).date}</div>
+                    <div>{formatTimestamp(board.updated_at).hours}</div>
                   </time>
                 </div>
                 <div className="group relative w-full">
@@ -214,6 +180,7 @@ function Homepage() {
                     <p className="font-semibold text-gray-900">
                       <Link
                         href={`/chattings/${createConversationName(
+                          user,
                           board.writer.username
                         )}`}
                       >

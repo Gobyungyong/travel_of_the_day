@@ -10,6 +10,11 @@ import Loading from "../../components/uiux/Loading";
 import routes from "../../routes";
 import { ProtectedRoute } from "../../utils/ProtectedRoute";
 import { cls } from "../../utils/ClassUtil";
+import {
+  formatTimestamp,
+  commentsCount,
+  removeHtmlTags,
+} from "../../utils/Funcs";
 
 function MyPage() {
   const [boards, setBoards] = useState(null);
@@ -41,41 +46,6 @@ function MyPage() {
     // const res = await authAxios.get("/api/v1/users/myinfo/");
     const res = await authAxios.get("/api/v1/users/rest_auth/user/");
     await setUser(res.data);
-  }
-
-  function formatMessageTimestamp(timestamp) {
-    if (!timestamp) return;
-
-    const date = new Date(timestamp);
-
-    const formattedDate = {
-      year: date.getFullYear(),
-      month: String(date.getMonth()).padStart(2, "0"),
-      day: String(date.getDay()).padStart(2, "0"),
-      hour: String(date.getHours()).padStart(2, "0"),
-      minute: String(date.getMinutes()).padStart(2, "0"),
-    };
-
-    return {
-      date: `${formattedDate.year}-${formattedDate.month}-${formattedDate.day}`,
-      hours: `${formattedDate.hour}:${formattedDate.minute}`,
-    };
-  }
-
-  function commentsCount(board) {
-    let count = board.comments_count;
-    board.comment_set.forEach((comment) => {
-      count += comment.recomments_count;
-    });
-    return count;
-  }
-
-  function removeHtmlTags(str) {
-    if (str && typeof str === "string") {
-      return str.replace(/<[^>]*>/g, "");
-    } else {
-      return "";
-    }
   }
 
   const pageNumbers = Array.from(
@@ -141,13 +111,11 @@ function MyPage() {
                 >
                   <div className="flex items-center gap-x-4 text-xs w-full">
                     <time
-                      dateTime={formatMessageTimestamp(board.updated_at).date}
+                      dateTime={formatTimestamp(board.updated_at).date}
                       className="text-gray-500 flex justify-between w-full"
                     >
-                      <div>{formatMessageTimestamp(board.updated_at).date}</div>
-                      <div>
-                        {formatMessageTimestamp(board.updated_at).hours}
-                      </div>
+                      <div>{formatTimestamp(board.updated_at).date}</div>
+                      <div>{formatTimestamp(board.updated_at).hours}</div>
                     </time>
                   </div>
                   <div className="group relative w-full">

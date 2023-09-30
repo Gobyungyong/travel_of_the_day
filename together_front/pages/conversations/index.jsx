@@ -6,6 +6,7 @@ import Image from "next/image";
 import { AuthContext } from "../../contexts/AuthContext";
 import Loading from "../../components/uiux/Loading";
 import { ProtectedRoute } from "../../utils/ProtectedRoute";
+import { formatTimestamp, createConversationName } from "../../utils/Funcs";
 
 function Conversations() {
   const { authAxios, user: loggedinUser } = useContext(AuthContext);
@@ -52,30 +53,6 @@ function Conversations() {
     getUserInfo();
   }, []);
 
-  function createConversationName(username) {
-    const namesAlph = [user?.username, username].sort();
-    return btoa(`${namesAlph[0]}__${namesAlph[1]}`);
-  }
-
-  function formatMessageTimestamp(timestamp) {
-    if (!timestamp) return;
-
-    const date = new Date(timestamp);
-
-    const formattedDate = {
-      year: date.getFullYear(),
-      month: String(date.getMonth()).padStart(2, "0"),
-      day: String(date.getDay()).padStart(2, "0"),
-      hour: String(date.getHours()).padStart(2, "0"),
-      minute: String(date.getMinutes()).padStart(2, "0"),
-    };
-
-    return {
-      date: `${formattedDate.year}-${formattedDate.month}-${formattedDate.day}`,
-      hours: `${formattedDate.hour}:${formattedDate.minute}`,
-    };
-  }
-
   if (!conversations || !user) {
     return (
       <ProtectedRoute>
@@ -102,6 +79,7 @@ function Conversations() {
           <li key={c.id}>
             <Link
               href={`/chattings/${createConversationName(
+                user,
                 c.other_user?.username
               )}`}
               className="flex justify-between gap-x-6 py-5"
@@ -139,10 +117,10 @@ function Conversations() {
                     className="flex flex-col items-end"
                   >
                     <div>
-                      {formatMessageTimestamp(c.last_message?.timestamp)?.date}
+                      {formatTimestamp(c.last_message?.timestamp)?.date}
                     </div>
                     <div>
-                      {formatMessageTimestamp(c.last_message?.timestamp)?.hours}
+                      {formatTimestamp(c.last_message?.timestamp)?.hours}
                     </div>
                   </time>
                 </p>

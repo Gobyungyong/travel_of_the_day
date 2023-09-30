@@ -7,7 +7,11 @@ import Image from "next/image";
 
 import { AuthContext } from "../../contexts/AuthContext";
 import routes from "../../routes";
-import { onUpload } from "../../utils/Funcs";
+import {
+  onUpload,
+  checkIdAvailability,
+  checkNicknameAvailability,
+} from "../../utils/Funcs";
 
 function Signup() {
   const [isIdAvailable, setIsIdAvailable] = useState(0);
@@ -153,64 +157,6 @@ function Signup() {
       });
   }
 
-  // function onUpload(e) {
-  //   const file = e.target.files[0];
-  //   const fileExt = file.name.split(".").pop();
-
-  //   // 파일 확장자 유효성 검사, input 태그 accept="image/*" 속성은 강제성 x
-  //   if (!["jpeg", "png", "jpg", "JPG", "PNG", "JPEG"].includes(fileExt)) {
-  //     alert("jpg, png, jpg 파일만 업로드가 가능합니다.");
-  //     return;
-  //   }
-
-  //   const reader = new FileReader();
-  //   reader.readAsDataURL(file);
-
-  //   return new Promise((resolve) => {
-  //     reader.onload = () => {
-  //       setImageSrc(reader.result || null); // 파일의 컨텐츠
-  //       setImageSrc(file);
-  //       resolve();
-  //     };
-  //   });
-  // }
-
-  async function checkIdAvailability() {
-    const username = getValues("username");
-    try {
-      const response = await authAxios.post("/api/v1/users/check_username/", {
-        username,
-      });
-
-      if (response.status === 200) {
-        setIsIdAvailable(1);
-        clearErrors("username");
-      } else {
-        setIsIdAvailable(-1);
-      }
-    } catch (error) {
-      console.error("중복확인 실패:", error);
-    }
-  }
-
-  async function checkNicknameAvailability() {
-    const nickname = getValues("nickname");
-    try {
-      const response = await authAxios.post("/api/v1/users/check_nickname/", {
-        nickname,
-      });
-
-      if (response.status === 200) {
-        setIsNicknameAvailable(2);
-        clearErrors("nickname");
-      } else {
-        setIsNicknameAvailable(-2);
-      }
-    } catch (error) {
-      console.error("중복확인 실패:", error);
-    }
-  }
-
   return (
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -276,7 +222,14 @@ function Signup() {
                         "영문 대소문자와 숫자 조합의 아이디만 사용 가능합니다.", // 에러 메세지
                     },
                   })}
-                  onBlur={checkIdAvailability}
+                  onBlur={() =>
+                    checkIdAvailability(
+                      getValues,
+                      authAxios,
+                      setIsIdAvailable,
+                      clearErrors
+                    )
+                  }
                 />
                 {isIdAvailable === 1 && (
                   <small className="text-green-500 font-semibold">
@@ -414,7 +367,14 @@ function Signup() {
                         "영문 대소문자, 한글, 숫자 조합의 닉네임만 사용 가능합니다.",
                     },
                   })}
-                  onBlur={checkNicknameAvailability}
+                  onBlur={() =>
+                    checkNicknameAvailability(
+                      getValues,
+                      authAxios,
+                      setIsNicknameAvailable,
+                      clearErrors
+                    )
+                  }
                 />
                 {isNicknameAvailable === 2 && (
                   <small className="text-green-500 font-semibold">

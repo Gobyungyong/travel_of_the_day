@@ -17,6 +17,11 @@ import Loading from "../../components/uiux/Loading";
 import routes from "../../routes";
 import { cls } from "../../utils/ClassUtil";
 import TextViewer from "../../components/TextViewer";
+import {
+  formatTimestamp,
+  getBoardDetail,
+  createConversationName,
+} from "../../utils/Funcs";
 
 function Board() {
   const { authAxios, user: loggedinUser } = useContext(AuthContext);
@@ -43,7 +48,7 @@ function Board() {
 
   useEffect(() => {
     if (boardId) {
-      getBoardDetail();
+      getBoardDetail(setBoard, authAxios, boardId);
     }
   }, [user, boardId]);
 
@@ -53,7 +58,7 @@ function Board() {
     }
   }, [formState]);
 
-  async function onValid(data) {
+  async function onCommentValid(data) {
     if (!user) {
       alert("로그인 후 이용 가능한 서비스입니다.");
       router.replace(routes.login);
@@ -63,7 +68,7 @@ function Board() {
       content,
       board: boardId,
     });
-    getBoardDetail();
+    getBoardDetail(setBoard, authAxios, boardId);
   }
 
   async function recommentOnValid(event, comment_id) {
@@ -77,13 +82,8 @@ function Board() {
       content,
       comment: comment_id,
     });
-    getBoardDetail();
+    getBoardDetail(setBoard, authAxios, boardId);
     event.target.content.value = "";
-  }
-
-  async function getBoardDetail() {
-    const res = await authAxios.get(`/api/v1/boards/${boardId}/`);
-    setBoard(res.data);
   }
 
   async function getUserInfo() {
@@ -115,30 +115,6 @@ function Board() {
     return <Loading />;
   }
 
-  function createConversationName(username) {
-    const namesAlph = [user?.username, username].sort();
-    return btoa(`${namesAlph[0]}__${namesAlph[1]}`);
-  }
-
-  function formatMessageTimestamp(timestamp) {
-    if (!timestamp) return;
-
-    const date = new Date(timestamp);
-
-    const formattedDate = {
-      year: date.getFullYear(),
-      month: String(date.getMonth()).padStart(2, "0"),
-      day: String(date.getDay()).padStart(2, "0"),
-      hour: String(date.getHours()).padStart(2, "0"),
-      minute: String(date.getMinutes()).padStart(2, "0"),
-    };
-
-    return {
-      date: `${formattedDate.year}-${formattedDate.month}-${formattedDate.day}`,
-      hours: `${formattedDate.hour}:${formattedDate.minute}`,
-    };
-  }
-
   function viewMoreClickHandler(commentId) {
     if (!isClicked) {
       setIsOpen(commentId);
@@ -154,7 +130,7 @@ function Board() {
         `/api/v1/comments/delete/${commentId}/`
       );
       if (res?.status === 204) {
-        getBoardDetail();
+        getBoardDetail(setBoard, authAxios, boardId);
       }
     }
   }
@@ -165,7 +141,7 @@ function Board() {
         `/api/v1/recomments/delete/${recommentId}/`
       );
       if (res?.status === 204) {
-        getBoardDetail();
+        getBoardDetail(setBoard, authAxios, boardId);
       }
     }
   }
@@ -189,8 +165,8 @@ function Board() {
                 className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
                 aria-hidden="true"
               />
-              {formatMessageTimestamp(board.updated_at).date} /{" "}
-              {formatMessageTimestamp(board.updated_at).hours}
+              {formatTimestamp(board.updated_at).date} /{" "}
+              {formatTimestamp(board.updated_at).hours}
             </div>
           </div>
           <div className="mt-5 flex justify-end lg:ml-4">
@@ -227,6 +203,7 @@ function Board() {
               {board.is_writer ? null : (
                 <Link
                   href={`/chattings/${createConversationName(
+                    user,
                     board.writer.username
                   )}`}
                 >
@@ -246,7 +223,7 @@ function Board() {
       </div>
 
       <form
-        onSubmit={handleSubmit(onValid)}
+        onSubmit={handleSubmit(onCommentValid)}
         className="mt-3 flex flex-col mx-3"
       >
         <div className="w-full">
@@ -274,8 +251,8 @@ function Board() {
                 </div>
                 <div className="flex flex-col items-end justify-around">
                   <span className="text-xs">
-                    {formatMessageTimestamp(comment.updated_at).date} /{" "}
-                    {formatMessageTimestamp(comment.updated_at).hours}
+                    {formatTimestamp(comment.updated_at).date} /{" "}
+                    {formatTimestamp(comment.updated_at).hours}
                   </span>
                   {comment.is_writer ? (
                     <button
@@ -322,8 +299,8 @@ function Board() {
                   </div>
                   <div className="flex flex-col items-end justify-around">
                     <span className="text-xs">
-                      {formatMessageTimestamp(recomment.updated_at).date} /{" "}
-                      {formatMessageTimestamp(recomment.updated_at).hours}
+                      {formatTimestamp(recomment.updated_at).date} /{" "}
+                      {formatTimestamp(recomment.updated_at).hours}
                     </span>
                     {recomment.is_writer ? (
                       <button
